@@ -630,6 +630,16 @@ function mostrarPantalla(id) {
    GPS
 ===================================================== */
 
+/* =====================================================
+   GPS MEJORADO - FUNCIONA SIN INTERNET
+   TOMA VARIAS LECTURAS Y CONSERVA LA MEJOR PRECISIÓN
+===================================================== */
+
+let vigilanciaGPS = null;
+let mejorGPS = null;
+let tiempoInicioGPS = null;
+let temporizadorGPS = null;
+
 function obtenerGPS() {
 
   const boton =
@@ -658,93 +668,377 @@ function obtenerGPS() {
 
   datos.style.display = "none";
 
+  mejorGPS = null;
+
+  tiempoInicioGPS = Date.now();
+
   mensaje.innerHTML =
     '<div class="mensaje aviso">' +
-    '📡 Buscando ubicación...<br>' +
-    'Puede tardar hasta 60 segundos.' +
+    '📡 <strong>BUSCANDO UBICACIÓN...</strong><br><br>' +
+    'No necesita internet.<br>' +
+    'Permanezca unos segundos en un lugar abierto.<br><br>' +
+    '⏳ Buscando la mejor precisión...' +
     '</div>';
 
-  navigator.geolocation.getCurrentPosition(
 
-    function(posicion) {
+  /* ---------------------------------------------------
+     INICIAR VIGILANCIA GPS
+  --------------------------------------------------- */
 
-      gps.latitud =
-        posicion.coords.latitude;
+  vigilanciaGPS =
+    navigator.geolocation.watchPosition(
 
-      gps.longitud =
-        posicion.coords.longitude;
+      function(posicion) {
 
-      gps.precision =
-        posicion.coords.accuracy;
+        const nuevaPrecision =
+          posicion.coords.accuracy;
 
-      document.getElementById("latitud")
-        .textContent =
-        gps.latitud.toFixed(6);
+        /*
+         * Guardamos solamente la lectura
+         * con mejor precisión.
+         */
 
-      document.getElementById("longitud")
-        .textContent =
-        gps.longitud.toFixed(6);
+        if (
+          mejorGPS === null ||
+          nuevaPrecision < mejorGPS.precision
+        ) {
 
-      document.getElementById("precision")
-        .textContent =
-        Math.round(gps.precision);
+          mejorGPS = {
 
-      datos.style.display = "block";
+            latitud:
+              posicion.coords.latitude,
 
-      mensaje.innerHTML =
-        '<div class="mensaje exito">' +
-        '✅ GPS obtenido correctamente' +
-        '</div>';
+            longitud:
+              posicion.coords.longitude,
 
-      boton.disabled = false;
+            precision:
+              nuevaPrecision
 
-      boton.textContent =
-        "📍 OBTENER GPS";
+          };
 
-    },
+          /*
+           * Actualizamos inmediatamente
+           * la pantalla con la mejor lectura.
+           */
 
-    function(error) {
+          mostrarMejorGPS();
 
-      boton.disabled = false;
+        }
 
-      boton.textContent =
-        "📍 INTENTAR GPS NUEVAMENTE";
 
-      let texto =
-        "No fue posible obtener la ubicación.";
+        /*
+         * Si conseguimos 10 metros o menos,
+         * consideramos que tenemos una
+         * excelente ubicación.
+         */
 
-      if (error.code === 1) {
-        texto =
-          "❌ Permiso de ubicación denegado. Revise los permisos del navegador.";
+        if (
+          mejorGPS !== null &&
+          mejorGPS.precision <= 10
+        ) {
+
+          finalizarGPS(
+            "excelente"
+          );
+
+        }
+
+      },
+
+      function(error) {
+
+        /*
+         * No detenemos inmediatamente la búsqueda.
+         * El teléfono puede tardar en encontrar
+         * los satélites.
+         */
+
+        if (error.code === 1) {
+
+          finalizarGPS(
+            "permiso"
+          );
+
+        } else {
+
+          mensaje.innerHTML =
+            '<div class="mensaje aviso">' +
+            '📡 Todavía buscando GPS...<br>' +
+            'Mantenga la ubicación activada y espere.' +
+            '</div>';
+
+        }
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
       }
 
-      if (error.code === 2) {
-        texto =
-          "⚠️ No se pudo determinar la ubicación. Salga al exterior y vuelva a intentar.";
-      }
+    );
 
-      if (error.code === 3) {
-        texto =
-          "⏱️ El GPS tardó demasiado. Vuelva a intentarlo.";
-      }
 
-      mensaje.innerHTML =
-        '<div class="mensaje error">' +
-        texto +
-        '</div>';
+  /* ---------------------------------------------------
+     TIEMPO MÁXIMO DE BÚSQUEDA: 60 SEGUNDOS
+  --------------------------------------------------- */
 
-    },
+  temporizadorGPS =
+    setTimeout(function() {
 
-    {
-      enableHighAccuracy: true,
-      timeout: 60000,
-      maximumAge: 0
-    }
+      finalizarGPS(
+        "tiempo"
+      );
 
-  );
+    }, 60000);
 
 }
 
+
+/* =====================================================
+   MOSTRAR LA MEJOR LECTURA ENCONTRADA
+===================================================== */
+
+function mostrarMejorGPS() {
+
+  if (!mejorGPS) {
+    return;
+  }
+
+  const latitud =
+    document.getElementById("latitud");
+
+  const longitud =
+    document.getElementById("longitud");
+
+  const precision =
+    document.getElementById("precision");
+
+  const mensaje =
+    document.getElementById("mensajeGPS");
+
+  latitud.textContent =
+    mejorGPS.latitud.toFixed(6);
+
+  longitud.textContent =
+    mejorGPS.longitud.toFixed(6);
+
+  precision.textContent =
+    Math.round(mejorGPS.precision);
+
+
+  let calidad = "";
+
+  if (mejorGPS.precision <= 10) {
+
+    calidad =
+      "🟢 MUY BUENA";
+
+  } else if (mejorGPS.precision <= 25) {
+
+    calidad =
+      "🟢 BUENA";
+
+  } else if (mejorGPS.precision <= 50) {
+
+    calidad =
+      "🟡 ACEPTABLE";
+
+  } else if (mejorGPS.precision <= 100) {
+
+    calidad =
+      "🟠 BAJA";
+
+  } else {
+
+    calidad =
+      "🔴 MUY BAJA";
+
+  }
+
+
+  mensaje.innerHTML =
+    '<div class="mensaje exito">' +
+    '📍 <strong>Ubicación encontrada</strong><br><br>' +
+    '🎯 Mejor precisión: <strong>' +
+    Math.round(mejorGPS.precision) +
+    ' metros</strong><br>' +
+    'Calidad GPS: <strong>' +
+    calidad +
+    '</strong>' +
+    '</div>';
+
+}
+
+
+/* =====================================================
+   FINALIZAR GPS
+===================================================== */
+
+function finalizarGPS(motivo) {
+
+  /*
+   * Detener vigilancia
+   */
+
+  if (vigilanciaGPS !== null) {
+
+    navigator.geolocation.clearWatch(
+      vigilanciaGPS
+    );
+
+    vigilanciaGPS = null;
+
+  }
+
+
+  /*
+   * Detener temporizador
+   */
+
+  if (temporizadorGPS !== null) {
+
+    clearTimeout(
+      temporizadorGPS
+    );
+
+    temporizadorGPS = null;
+
+  }
+
+
+  const boton =
+    document.getElementById("btnGPS");
+
+  const mensaje =
+    document.getElementById("mensajeGPS");
+
+  const datos =
+    document.getElementById("datosGPS");
+
+
+  /*
+   * No se obtuvo ninguna posición
+   */
+
+  if (mejorGPS === null) {
+
+    boton.disabled = false;
+
+    boton.textContent =
+      "📍 INTENTAR GPS NUEVAMENTE";
+
+    if (motivo === "permiso") {
+
+      mensaje.innerHTML =
+        '<div class="mensaje error">' +
+        '❌ El permiso de ubicación fue denegado.<br><br>' +
+        'Revise los permisos de ubicación del navegador.' +
+        '</div>';
+
+    } else {
+
+      mensaje.innerHTML =
+        '<div class="mensaje error">' +
+        '⚠️ No se pudo obtener una posición GPS.<br><br>' +
+        'Salga al exterior, mantenga activada la ubicación ' +
+        'y vuelva a intentarlo.' +
+        '</div>';
+
+    }
+
+    return;
+  }
+
+
+  /*
+   * Guardar definitivamente la mejor posición
+   */
+
+  gps.latitud =
+    mejorGPS.latitud;
+
+  gps.longitud =
+    mejorGPS.longitud;
+
+  gps.precision =
+    mejorGPS.precision;
+
+
+  /*
+   * Mostrar datos
+   */
+
+  document.getElementById("latitud")
+    .textContent =
+    gps.latitud.toFixed(6);
+
+  document.getElementById("longitud")
+    .textContent =
+    gps.longitud.toFixed(6);
+
+  document.getElementById("precision")
+    .textContent =
+    Math.round(gps.precision);
+
+
+  datos.style.display =
+    "block";
+
+
+  /*
+   * Mensaje según precisión
+   */
+
+  let calidad = "";
+
+  if (gps.precision <= 10) {
+
+    calidad =
+      "🟢 MUY BUENA";
+
+  } else if (gps.precision <= 25) {
+
+    calidad =
+      "🟢 BUENA";
+
+  } else if (gps.precision <= 50) {
+
+    calidad =
+      "🟡 ACEPTABLE";
+
+  } else if (gps.precision <= 100) {
+
+    calidad =
+      "🟠 BAJA";
+
+  } else {
+
+    calidad =
+      "🔴 MUY BAJA";
+
+  }
+
+
+  mensaje.innerHTML =
+    '<div class="mensaje exito">' +
+    '✅ <strong>GPS OBTENIDO</strong><br><br>' +
+    '🎯 Precisión: <strong>' +
+    Math.round(gps.precision) +
+    ' metros</strong><br>' +
+    'Calidad: <strong>' +
+    calidad +
+    '</strong>' +
+    '</div>';
+
+
+  boton.disabled = false;
+
+  boton.textContent =
+    "📍 OBTENER GPS";
+
+}
 
 /* =====================================================
    CONTINUAR A DATOS
