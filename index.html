@@ -1,1 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#1565c0">
+
+  <meta name="description"
+        content="Sistema Post-Sismo para evaluación rápida de edificaciones">
+
+  <link rel="manifest" href="./manifest.json">
+
+  <title>POST-SISMO</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+    }
+
+    .contenedor {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .encabezado {
+      background: #1565c0;
+      color: white;
+      padding: 25px 20px;
+      border-radius: 0 0 20px 20px;
+      text-align: center;
+    }
+
+    .encabezado h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .encabezado p {
+      font-size: 20px;
+      margin: 10px 0 0;
+    }
+
+    .estado {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background: white;
+      text-align: center;
+      font-size: 21px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    .boton {
+      width: 100%;
+      margin-top: 18px;
+      padding: 20px;
+      border: none;
+      border-radius: 14px;
+      background: #1565c0;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .boton:active {
+      transform: scale(0.98);
+    }
+
+    .informacion {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 14px;
+      font-size: 19px;
+      line-height: 1.5;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="encabezado">
+
+    <h1>🏚️ POST-SISMO</h1>
+
+    <p>
+      Evaluación rápida de edificaciones
+    </p>
+
+  </div>
+
+  <div class="contenedor">
+
+    <div id="estado" class="estado">
+      🔄 Preparando aplicación...
+    </div>
+
+    <button class="boton"
+            onclick="obtenerGPS()">
+      📍 OBTENER GPS
+    </button>
+
+    <div id="resultadoGPS"
+         class="informacion"
+         style="display:none;">
+    </div>
+
+    <div class="informacion">
+
+      <strong>📱 Aplicación preparada</strong>
+
+      <p>
+        Esta versión está siendo preparada para funcionar
+        sin conexión a internet.
+      </p>
+
+      <p>
+        Los datos podrán guardarse en el teléfono y
+        sincronizarse posteriormente cuando regrese la conexión.
+      </p>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // =====================================================
+    // DETECTAR INTERNET
+    // =====================================================
+
+    function actualizarConexion() {
+
+      const estado =
+        document.getElementById("estado");
+
+      if (navigator.onLine) {
+
+        estado.innerHTML =
+          "🟢 CON INTERNET";
+
+      } else {
+
+        estado.innerHTML =
+          "🟡 SIN INTERNET — MODO OFFLINE";
+
+      }
+
+    }
+
+
+    window.addEventListener(
+      "online",
+      actualizarConexion
+    );
+
+    window.addEventListener(
+      "offline",
+      actualizarConexion
+    );
+
+
+    // =====================================================
+    // GPS
+    // =====================================================
+
+    function obtenerGPS() {
+
+      const resultado =
+        document.getElementById("resultadoGPS");
+
+      resultado.style.display = "block";
+
+      resultado.innerHTML =
+        "📍 Obteniendo ubicación...";
+
+      if (!navigator.geolocation) {
+
+        resultado.innerHTML =
+          "❌ Este dispositivo no permite obtener GPS.";
+
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+
+        function(posicion) {
+
+          const latitud =
+            posicion.coords.latitude;
+
+          const longitud =
+            posicion.coords.longitude;
+
+          const precision =
+            posicion.coords.accuracy;
+
+          resultado.innerHTML =
+
+            "📍 <strong>GPS obtenido</strong><br><br>" +
+
+            "Latitud: " +
+            latitud +
+            "<br>" +
+
+            "Longitud: " +
+            longitud +
+            "<br>" +
+
+            "Precisión: " +
+            Math.round(precision) +
+            " metros";
+
+        },
+
+        function(error) {
+
+          resultado.innerHTML =
+            "❌ No fue posible obtener el GPS.<br><br>" +
+            "Verifique que la ubicación del teléfono esté activada.";
+
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 30000,
+          maximumAge: 0
+        }
+
+      );
+
+    }
+
+
+    // =====================================================
+    // SERVICE WORKER
+    // =====================================================
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener(
+        "load",
+        function() {
+
+          navigator.serviceWorker
+            .register("./sw.js")
+            .then(function() {
+
+              console.log(
+                "Service Worker registrado correctamente"
+              );
+
+            })
+            .catch(function(error) {
+
+              console.error(
+                "Error registrando Service Worker:",
+                error
+              );
+
+            });
+
+        }
+      );
+
+    }
+
+
+    // =====================================================
+    // INICIO
+    // =====================================================
+
+    actualizarConexion();
+
+  </script>
+
+</body>
+
+</html>
