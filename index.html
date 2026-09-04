@@ -2,17 +2,20 @@
 <html lang="es">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-  <meta name="theme-color" content="#1565c0">
+  <meta name="theme-color"
+        content="#1565c0">
 
   <meta name="description"
         content="Sistema Post-Sismo para evaluación rápida de edificaciones">
 
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest"
+        href="./manifest.json">
 
   <title>POST-SISMO</title>
 
@@ -24,81 +27,421 @@
 
     html,
     body {
+
       margin: 0;
       padding: 0;
+
       width: 100%;
       min-height: 100%;
+
       font-family: Arial, sans-serif;
+
       background: #f4f7fa;
+
     }
 
-    .contenedor {
-      width: 100%;
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
+    body {
+      padding-bottom: 30px;
     }
+
+    /* =====================================================
+       ENCABEZADO
+       ===================================================== */
 
     .encabezado {
+
       background: #1565c0;
+
       color: white;
-      padding: 25px 20px;
+
+      padding: 24px 18px;
+
       border-radius: 0 0 20px 20px;
+
       text-align: center;
+
     }
 
     .encabezado h1 {
+
       margin: 0;
+
       font-size: 30px;
+
     }
 
     .encabezado p {
-      font-size: 20px;
+
       margin: 10px 0 0;
+
+      font-size: 19px;
+
     }
+
+    /* =====================================================
+       CONTENEDOR
+       ===================================================== */
+
+    .contenedor {
+
+      width: 100%;
+
+      max-width: 600px;
+
+      margin: auto;
+
+      padding: 18px;
+
+    }
+
+    /* =====================================================
+       ESTADO DE CONEXIÓN
+       ===================================================== */
 
     .estado {
-      margin-top: 20px;
-      padding: 18px;
+
+      margin-bottom: 18px;
+
+      padding: 16px;
+
       border-radius: 14px;
+
       background: white;
+
       text-align: center;
-      font-size: 21px;
+
+      font-size: 20px;
+
       font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.10);
+
     }
 
+    /* =====================================================
+       PANTALLAS
+       ===================================================== */
+
+    .pantalla {
+      display: none;
+    }
+
+    .pantalla.activa {
+      display: block;
+    }
+
+    /* =====================================================
+       TARJETAS
+       ===================================================== */
+
+    .tarjeta {
+
+      margin-top: 16px;
+
+      padding: 18px;
+
+      background: white;
+
+      border-radius: 16px;
+
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.10);
+
+    }
+
+    .tarjeta h2 {
+
+      margin-top: 0;
+
+      font-size: 24px;
+
+    }
+
+    /* =====================================================
+       BOTONES
+       ===================================================== */
+
     .boton {
+
       width: 100%;
-      margin-top: 18px;
-      padding: 20px;
+
+      margin-top: 15px;
+
+      padding: 19px;
+
       border: none;
+
       border-radius: 14px;
+
       background: #1565c0;
+
       color: white;
-      font-size: 22px;
+
+      font-size: 21px;
+
       font-weight: bold;
+
       cursor: pointer;
+
     }
 
     .boton:active {
+
       transform: scale(0.98);
+
     }
 
-    .informacion {
-      margin-top: 20px;
-      padding: 20px;
-      background: white;
-      border-radius: 14px;
+    .boton-secundario {
+
+      background: #455a64;
+
+    }
+
+    .boton-verde {
+
+      background: #2e7d32;
+
+    }
+
+    .boton-naranja {
+
+      background: #ef6c00;
+
+    }
+
+    .boton-rojo {
+
+      background: #c62828;
+
+    }
+
+    /* =====================================================
+       CAMPOS
+       ===================================================== */
+
+    label {
+
+      display: block;
+
+      margin-top: 17px;
+
+      margin-bottom: 7px;
+
       font-size: 19px;
-      line-height: 1.5;
+
+      font-weight: bold;
+
+    }
+
+    input,
+    select,
+    textarea {
+
+      width: 100%;
+
+      padding: 15px;
+
+      border: 2px solid #d0d7de;
+
+      border-radius: 10px;
+
+      font-size: 18px;
+
+      background: white;
+
+    }
+
+    textarea {
+
+      min-height: 110px;
+
+      resize: vertical;
+
+    }
+
+    /* =====================================================
+       GPS
+       ===================================================== */
+
+    .gps-dato {
+
+      margin-top: 8px;
+
+      padding: 12px;
+
+      background: #eef5ff;
+
+      border-radius: 9px;
+
+      font-size: 17px;
+
+      word-break: break-word;
+
+    }
+
+    .gps-ok {
+
+      color: #2e7d32;
+
+      font-weight: bold;
+
+    }
+
+    /* =====================================================
+       FOTOGRAFÍAS
+       ===================================================== */
+
+    .foto {
+
+      margin-top: 15px;
+
+      padding: 15px;
+
+      border: 2px dashed #90a4ae;
+
+      border-radius: 12px;
+
+      background: #fafafa;
+
+    }
+
+    .foto input {
+
+      border: none;
+
+      padding: 8px 0;
+
+    }
+
+    /* =====================================================
+       MENSAJES
+       ===================================================== */
+
+    .mensaje {
+
+      margin-top: 15px;
+
+      padding: 15px;
+
+      border-radius: 12px;
+
+      font-size: 18px;
+
+      line-height: 1.4;
+
+    }
+
+    .mensaje-info {
+
+      background: #e3f2fd;
+
+    }
+
+    .mensaje-ok {
+
+      background: #e8f5e9;
+
+      color: #1b5e20;
+
+    }
+
+    .mensaje-alerta {
+
+      background: #fff3e0;
+
+      color: #e65100;
+
+    }
+
+    /* =====================================================
+       BARRA DE PASOS
+       ===================================================== */
+
+    .pasos {
+
+      display: flex;
+
+      gap: 5px;
+
+      margin-bottom: 18px;
+
+    }
+
+    .paso {
+
+      flex: 1;
+
+      height: 8px;
+
+      background: #cfd8dc;
+
+      border-radius: 10px;
+
+    }
+
+    .paso.activo {
+
+      background: #1565c0;
+
+    }
+
+    /* =====================================================
+       RESUMEN
+       ===================================================== */
+
+    .resumen {
+
+      padding: 15px;
+
+      margin-top: 12px;
+
+      border-radius: 10px;
+
+      background: #f5f5f5;
+
+      font-size: 17px;
+
+      line-height: 1.6;
+
+    }
+
+    /* =====================================================
+       CHECKBOX
+       ===================================================== */
+
+    .opcion {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 13px;
+
+      font-size: 18px;
+
+    }
+
+    .opcion input {
+
+      width: 24px;
+
+      height: 24px;
+
     }
 
   </style>
 
 </head>
 
+
 <body>
+
+  <!-- =====================================================
+       ENCABEZADO
+       ===================================================== -->
 
   <div class="encabezado">
 
@@ -110,190 +453,1509 @@
 
   </div>
 
+
   <div class="contenedor">
 
-    <div id="estado" class="estado">
+
+    <!-- =====================================================
+         ESTADO
+         ===================================================== -->
+
+    <div id="estado"
+         class="estado">
+
       🔄 Preparando aplicación...
-    </div>
-
-    <button class="boton"
-            onclick="obtenerGPS()">
-      📍 OBTENER GPS
-    </button>
-
-    <div id="resultadoGPS"
-         class="informacion"
-         style="display:none;">
-    </div>
-
-    <div class="informacion">
-
-      <strong>📱 Aplicación preparada</strong>
-
-      <p>
-        Esta versión está siendo preparada para funcionar
-        sin conexión a internet.
-      </p>
-
-      <p>
-        Los datos podrán guardarse en el teléfono y
-        sincronizarse posteriormente cuando regrese la conexión.
-      </p>
 
     </div>
+
+
+    <!-- =====================================================
+         BARRA DE PASOS
+         ===================================================== -->
+
+    <div class="pasos">
+
+      <div id="barra1"
+           class="paso activo"></div>
+
+      <div id="barra2"
+           class="paso"></div>
+
+      <div id="barra3"
+           class="paso"></div>
+
+      <div id="barra4"
+           class="paso"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PANTALLA 1 — GPS
+         ===================================================== -->
+
+    <section id="pantallaGPS"
+             class="pantalla activa">
+
+      <div class="tarjeta">
+
+        <h2>
+          📍 Ubicación del inmueble
+        </h2>
+
+        <p style="font-size:18px;">
+
+          Primero obtenga la ubicación GPS
+          del lugar que está evaluando.
+
+        </p>
+
+
+        <button class="boton"
+                onclick="obtenerGPS()">
+
+          📍 OBTENER GPS
+
+        </button>
+
+
+        <div id="resultadoGPS"
+             class="gps-dato"
+             style="display:none;">
+
+        </div>
+
+
+        <button id="botonContinuarGPS"
+                class="boton boton-verde"
+                style="display:none;"
+                onclick="irEvaluacion()">
+
+          ➡️ CONTINUAR
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PANTALLA 2 — EVALUACIÓN
+         ===================================================== -->
+
+    <section id="pantallaEvaluacion"
+             class="pantalla">
+
+      <div class="tarjeta">
+
+        <h2>
+          📋 Evaluación rápida
+        </h2>
+
+
+        <label>
+          👤 Nombre del evaluador
+        </label>
+
+        <input id="evaluador"
+               type="text"
+               autocomplete="name">
+
+
+        <label>
+          🏢 Cargo / entidad
+        </label>
+
+        <input id="cargo"
+               type="text">
+
+
+        <label>
+          📱 Número celular
+        </label>
+
+        <input id="celular"
+               type="tel">
+
+
+        <label>
+          🏙️ Municipio
+        </label>
+
+        <input id="municipio"
+               type="text">
+
+
+        <label>
+          📍 Dirección o ubicación
+        </label>
+
+        <input id="ubicacion"
+               type="text">
+
+
+        <label>
+          🏘️ Barrio / sector
+        </label>
+
+        <input id="barrio"
+               type="text">
+
+
+        <label>
+          🏠 Tipo de edificación
+        </label>
+
+        <select id="tipo">
+
+          <option value="">
+            Seleccione...
+          </option>
+
+          <option>
+            Vivienda
+          </option>
+
+          <option>
+            Edificio residencial
+          </option>
+
+          <option>
+            Comercio
+          </option>
+
+          <option>
+            Institución educativa
+          </option>
+
+          <option>
+            Hospital / centro de salud
+          </option>
+
+          <option>
+            Edificio público
+          </option>
+
+          <option>
+            Industria
+          </option>
+
+          <option>
+            Otra
+          </option>
+
+        </select>
+
+
+        <label>
+          🏢 Número de pisos
+        </label>
+
+        <input id="pisos"
+               type="number"
+               min="1">
+
+
+        <label>
+          👥 Personas presentes
+        </label>
+
+        <input id="personas"
+               type="number"
+               min="0">
+
+
+        <label>
+          ⚠️ Nivel de daño
+        </label>
+
+        <select id="nivel">
+
+          <option value="">
+            Seleccione...
+          </option>
+
+          <option>
+            NIVEL 0 - SIN DAÑOS VISIBLES
+          </option>
+
+          <option>
+            NIVEL 1 - DAÑOS LEVES
+          </option>
+
+          <option>
+            NIVEL 2 - DAÑOS MODERADOS
+          </option>
+
+          <option>
+            NIVEL 3 - DAÑOS GRAVES
+          </option>
+
+          <option>
+            NO ES POSIBLE EVALUAR
+          </option>
+
+        </select>
+
+
+        <label>
+          🩹 ¿Hay personas heridas?
+        </label>
+
+        <select id="heridos">
+
+          <option>
+            No
+          </option>
+
+          <option>
+            Sí
+          </option>
+
+          <option>
+            No se sabe
+          </option>
+
+        </select>
+
+
+        <label>
+          🆘 ¿Hay personas atrapadas?
+        </label>
+
+        <select id="atrapados">
+
+          <option>
+            No
+          </option>
+
+          <option>
+            Sí
+          </option>
+
+          <option>
+            No se sabe
+          </option>
+
+        </select>
+
+
+        <label>
+          ⚠️ Condiciones de riesgo
+        </label>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Elementos con riesgo de caer"
+                 class="riesgo">
+
+          Elementos con riesgo de caer
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Riesgo de colapso"
+                 class="riesgo">
+
+          Riesgo de colapso
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Olor a gas"
+                 class="riesgo">
+
+          Olor a gas
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Sospecha de fuga de gas"
+                 class="riesgo">
+
+          Sospecha de fuga de gas
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Riesgo de incendio"
+                 class="riesgo">
+
+          Riesgo de incendio
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Cables eléctricos expuestos"
+                 class="riesgo">
+
+          Cables eléctricos expuestos
+
+        </div>
+
+
+        <div class="opcion">
+
+          <input type="checkbox"
+                 value="Estructura inestable"
+                 class="riesgo">
+
+          Estructura inestable
+
+        </div>
+
+
+        <label>
+          📝 Observaciones
+        </label>
+
+        <textarea id="observaciones"></textarea>
+
+
+        <label>
+          💡 Recomendaciones
+        </label>
+
+        <textarea id="recomendaciones"></textarea>
+
+
+        <button class="boton"
+                onclick="irFotografias()">
+
+          ➡️ CONTINUAR A FOTOGRAFÍAS
+
+        </button>
+
+
+        <button class="boton boton-secundario"
+                onclick="volverGPS()">
+
+          ⬅️ VOLVER AL GPS
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PANTALLA 3 — FOTOGRAFÍAS
+         ===================================================== -->
+
+    <section id="pantallaFotografias"
+             class="pantalla">
+
+      <div class="tarjeta">
+
+        <h2>
+          📸 Registro fotográfico
+        </h2>
+
+        <p style="font-size:18px;">
+
+          Puede tomar hasta 3 fotografías
+          del inmueble.
+
+        </p>
+
+
+        <div class="foto">
+
+          <strong>
+            📸 Fotografía 1
+          </strong>
+
+          <input id="foto1"
+                 type="file"
+                 accept="image/*"
+                 capture="environment">
+
+        </div>
+
+
+        <div class="foto">
+
+          <strong>
+            📸 Fotografía 2
+          </strong>
+
+          <input id="foto2"
+                 type="file"
+                 accept="image/*"
+                 capture="environment">
+
+        </div>
+
+
+        <div class="foto">
+
+          <strong>
+            📸 Fotografía 3
+          </strong>
+
+          <input id="foto3"
+                 type="file"
+                 accept="image/*"
+                 capture="environment">
+
+        </div>
+
+
+        <div id="mensajeFotos"
+             class="mensaje mensaje-info">
+
+          📸 Seleccione las fotografías
+          que desee guardar.
+
+        </div>
+
+
+        <button class="boton boton-verde"
+                onclick="guardarEvaluacion()">
+
+          💾 GUARDAR EVALUACIÓN
+
+        </button>
+
+
+        <button class="boton boton-secundario"
+                onclick="volverEvaluacion()">
+
+          ⬅️ VOLVER A EVALUACIÓN
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PANTALLA 4 — GUARDADO
+         ===================================================== -->
+
+    <section id="pantallaGuardado"
+             class="pantalla">
+
+      <div class="tarjeta">
+
+        <h2>
+          💾 Evaluación guardada
+        </h2>
+
+
+        <div id="resultadoGuardado"
+             class="mensaje mensaje-ok">
+
+        </div>
+
+
+        <div id="resumenGuardado"
+             class="resumen">
+
+        </div>
+
+
+        <button class="boton"
+                onclick="nuevaEvaluacion()">
+
+          ➕ NUEVA EVALUACIÓN
+
+        </button>
+
+
+        <button id="botonPendientes"
+                class="boton boton-naranja"
+                onclick="verPendientes()">
+
+          📦 VER EVALUACIONES PENDIENTES
+
+        </button>
+
+      </div>
+
+    </section>
+
 
   </div>
 
-  <script>
 
-    // =====================================================
-    // DETECTAR INTERNET
-    // =====================================================
+<script>
 
-    function actualizarConexion() {
+/* =========================================================
+   VARIABLES
+   ========================================================= */
 
-      const estado =
-        document.getElementById("estado");
+let gps = {
 
-      if (navigator.onLine) {
+  latitud: null,
+  longitud: null,
+  precision: null
 
-        estado.innerHTML =
-          "🟢 CON INTERNET";
+};
 
-      } else {
 
-        estado.innerHTML =
-          "🟡 SIN INTERNET — MODO OFFLINE";
+/* =========================================================
+   ALMACENAMIENTO
+   ========================================================= */
 
-      }
+const CLAVE_OFFLINE =
+  "POST_SISMO_EVALUACIONES_OFFLINE_V1";
+
+
+function obtenerEvaluaciones() {
+
+  try {
+
+    return JSON.parse(
+      localStorage.getItem(CLAVE_OFFLINE)
+    ) || [];
+
+  } catch (error) {
+
+    console.error(error);
+
+    return [];
+
+  }
+
+}
+
+
+function guardarEvaluaciones(lista) {
+
+  localStorage.setItem(
+    CLAVE_OFFLINE,
+    JSON.stringify(lista)
+  );
+
+}
+
+
+/* =========================================================
+   CONEXIÓN
+   ========================================================= */
+
+function actualizarConexion() {
+
+  const estado =
+    document.getElementById("estado");
+
+
+  if (navigator.onLine) {
+
+    estado.innerHTML =
+      "🟢 CON INTERNET";
+
+  } else {
+
+    estado.innerHTML =
+      "🟡 SIN INTERNET — MODO OFFLINE";
+
+  }
+
+}
+
+
+window.addEventListener(
+  "online",
+  actualizarConexion
+);
+
+
+window.addEventListener(
+  "offline",
+  actualizarConexion
+);
+
+
+/* =========================================================
+   CAMBIAR PANTALLA
+   ========================================================= */
+
+function mostrarPantalla(id) {
+
+  document
+    .querySelectorAll(".pantalla")
+    .forEach(function(pantalla) {
+
+      pantalla.classList.remove("activa");
+
+    });
+
+
+  document
+    .getElementById(id)
+    .classList.add("activa");
+
+
+  window.scrollTo({
+
+    top: 0,
+    behavior: "smooth"
+
+  });
+
+}
+
+
+/* =========================================================
+   BARRA DE PASOS
+   ========================================================= */
+
+function actualizarPaso(numero) {
+
+  for (
+    let i = 1;
+    i <= 4;
+    i++
+  ) {
+
+    const barra =
+      document.getElementById(
+        "barra" + i
+      );
+
+
+    if (i <= numero) {
+
+      barra.classList.add("activo");
+
+    } else {
+
+      barra.classList.remove("activo");
 
     }
 
+  }
 
-    window.addEventListener(
-      "online",
-      actualizarConexion
+}
+
+
+/* =========================================================
+   GPS
+   ========================================================= */
+
+function obtenerGPS() {
+
+  const resultado =
+    document.getElementById(
+      "resultadoGPS"
     );
 
-    window.addEventListener(
-      "offline",
-      actualizarConexion
-    );
+
+  resultado.style.display =
+    "block";
 
 
-    // =====================================================
-    // GPS
-    // =====================================================
+  resultado.innerHTML =
+    "📍 Obteniendo ubicación...";
 
-    function obtenerGPS() {
 
-      const resultado =
-        document.getElementById("resultadoGPS");
+  if (!navigator.geolocation) {
 
-      resultado.style.display = "block";
+    resultado.innerHTML =
+      "❌ Este dispositivo no permite obtener GPS.";
+
+    return;
+
+  }
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(posicion) {
+
+      gps.latitud =
+        posicion.coords.latitude;
+
+      gps.longitud =
+        posicion.coords.longitude;
+
+      gps.precision =
+        posicion.coords.accuracy;
+
 
       resultado.innerHTML =
-        "📍 Obteniendo ubicación...";
 
-      if (!navigator.geolocation) {
+        '<span class="gps-ok">' +
+        "✅ GPS OBTENIDO" +
+        "</span><br><br>" +
 
-        resultado.innerHTML =
-          "❌ Este dispositivo no permite obtener GPS.";
+        "📍 Latitud: " +
+        gps.latitud.toFixed(6) +
+        "<br>" +
 
-        return;
+        "📍 Longitud: " +
+        gps.longitud.toFixed(6) +
+        "<br>" +
+
+        "🎯 Precisión: " +
+        Math.round(gps.precision) +
+        " metros";
+
+
+      document
+        .getElementById(
+          "botonContinuarGPS"
+        )
+        .style.display =
+        "block";
+
+
+      localStorage.setItem(
+        "POST_SISMO_ULTIMO_GPS",
+        JSON.stringify(gps)
+      );
+
+    },
+
+    function(error) {
+
+      resultado.innerHTML =
+
+        "❌ No fue posible obtener el GPS.<br><br>" +
+
+        "Verifique que la ubicación del teléfono " +
+        "esté activada y vuelva a intentarlo.";
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 30000,
+
+      maximumAge: 0
+
+    }
+
+  );
+
+}
+
+
+/* =========================================================
+   IR A EVALUACIÓN
+   ========================================================= */
+
+function irEvaluacion() {
+
+  if (!gps.latitud) {
+
+    alert(
+      "Primero debe obtener la ubicación GPS."
+    );
+
+    return;
+
+  }
+
+
+  mostrarPantalla(
+    "pantallaEvaluacion"
+  );
+
+
+  actualizarPaso(2);
+
+}
+
+
+/* =========================================================
+   VOLVER GPS
+   ========================================================= */
+
+function volverGPS() {
+
+  mostrarPantalla(
+    "pantallaGPS"
+  );
+
+
+  actualizarPaso(1);
+
+}
+
+
+/* =========================================================
+   IR A FOTOGRAFÍAS
+   ========================================================= */
+
+function irFotografias() {
+
+  const evaluador =
+    document.getElementById(
+      "evaluador"
+    ).value.trim();
+
+
+  const municipio =
+    document.getElementById(
+      "municipio"
+    ).value.trim();
+
+
+  const ubicacion =
+    document.getElementById(
+      "ubicacion"
+    ).value.trim();
+
+
+  const nivel =
+    document.getElementById(
+      "nivel"
+    ).value;
+
+
+  if (!evaluador) {
+
+    alert(
+      "Ingrese el nombre del evaluador."
+    );
+
+    return;
+
+  }
+
+
+  if (!municipio) {
+
+    alert(
+      "Ingrese el municipio."
+    );
+
+    return;
+
+  }
+
+
+  if (!ubicacion) {
+
+    alert(
+      "Ingrese la ubicación del inmueble."
+    );
+
+    return;
+
+  }
+
+
+  if (!nivel) {
+
+    alert(
+      "Seleccione el nivel de daño."
+    );
+
+    return;
+
+  }
+
+
+  mostrarPantalla(
+    "pantallaFotografias"
+  );
+
+
+  actualizarPaso(3);
+
+}
+
+
+/* =========================================================
+   VOLVER EVALUACIÓN
+   ========================================================= */
+
+function volverEvaluacion() {
+
+  mostrarPantalla(
+    "pantallaEvaluacion"
+  );
+
+
+  actualizarPaso(2);
+
+}
+
+
+/* =========================================================
+   OBTENER RIESGOS
+   ========================================================= */
+
+function obtenerRiesgos() {
+
+  const seleccionados = [];
+
+
+  document
+    .querySelectorAll(".riesgo:checked")
+    .forEach(function(caja) {
+
+      seleccionados.push(
+        caja.value
+      );
+
+    });
+
+
+  return seleccionados;
+
+}
+
+
+/* =========================================================
+   LEER FOTO
+   ========================================================= */
+
+function leerFoto(input) {
+
+  return new Promise(function(resolve) {
+
+    if (
+      !input ||
+      !input.files ||
+      !input.files[0]
+    ) {
+
+      resolve(null);
+
+      return;
+
+    }
+
+
+    const archivo =
+      input.files[0];
+
+
+    const lector =
+      new FileReader();
+
+
+    lector.onload = function(e) {
+
+      resolve({
+
+        nombre: archivo.name,
+
+        tipo: archivo.type,
+
+        data: e.target.result
+
+      });
+
+    };
+
+
+    lector.onerror = function() {
+
+      resolve(null);
+
+    };
+
+
+    lector.readAsDataURL(
+      archivo
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   GENERAR ID
+   ========================================================= */
+
+function generarID() {
+
+  return (
+
+    "PS-" +
+
+    Date.now() +
+
+    "-" +
+
+    Math.floor(
+      Math.random() * 10000
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+   GUARDAR EVALUACIÓN
+   ========================================================= */
+
+async function guardarEvaluacion() {
+
+  const boton =
+    event.currentTarget;
+
+
+  boton.disabled = true;
+
+
+  boton.innerHTML =
+    "💾 GUARDANDO...";
+
+
+  try {
+
+    const foto1 =
+      await leerFoto(
+        document.getElementById(
+          "foto1"
+        )
+      );
+
+
+    const foto2 =
+      await leerFoto(
+        document.getElementById(
+          "foto2"
+        )
+      );
+
+
+    const foto3 =
+      await leerFoto(
+        document.getElementById(
+          "foto3"
+        )
+      );
+
+
+    const fotografias =
+      [foto1, foto2, foto3]
+      .filter(Boolean);
+
+
+    const evaluacion = {
+
+      id: generarID(),
+
+      fechaHora:
+        new Date().toISOString(),
+
+      sincronizado: false,
+
+      estado: "PENDIENTE",
+
+      gps: {
+
+        latitud:
+          gps.latitud,
+
+        longitud:
+          gps.longitud,
+
+        precision:
+          gps.precision
+
+      },
+
+      evaluador:
+        document.getElementById(
+          "evaluador"
+        ).value.trim(),
+
+      cargo:
+        document.getElementById(
+          "cargo"
+        ).value.trim(),
+
+      celular:
+        document.getElementById(
+          "celular"
+        ).value.trim(),
+
+      municipio:
+        document.getElementById(
+          "municipio"
+        ).value.trim(),
+
+      ubicacion:
+        document.getElementById(
+          "ubicacion"
+        ).value.trim(),
+
+      barrio:
+        document.getElementById(
+          "barrio"
+        ).value.trim(),
+
+      tipo:
+        document.getElementById(
+          "tipo"
+        ).value,
+
+      pisos:
+        document.getElementById(
+          "pisos"
+        ).value,
+
+      personas:
+        document.getElementById(
+          "personas"
+        ).value,
+
+      nivel:
+        document.getElementById(
+          "nivel"
+        ).value,
+
+      heridos:
+        document.getElementById(
+          "heridos"
+        ).value,
+
+      atrapados:
+        document.getElementById(
+          "atrapados"
+        ).value,
+
+      riesgos:
+        obtenerRiesgos(),
+
+      observaciones:
+        document.getElementById(
+          "observaciones"
+        ).value.trim(),
+
+      recomendaciones:
+        document.getElementById(
+          "recomendaciones"
+        ).value.trim(),
+
+      fotografias:
+        fotografias
+
+    };
+
+
+    const evaluaciones =
+      obtenerEvaluaciones();
+
+
+    evaluaciones.push(
+      evaluacion
+    );
+
+
+    guardarEvaluaciones(
+      evaluaciones
+    );
+
+
+    mostrarPantalla(
+      "pantallaGuardado"
+    );
+
+
+    actualizarPaso(4);
+
+
+    document
+      .getElementById(
+        "resultadoGuardado"
+      )
+      .innerHTML =
+
+      "✅ LA EVALUACIÓN FUE GUARDADA EN EL TELÉFONO.<br><br>" +
+
+      "Estado: <strong>PENDIENTE DE SINCRONIZACIÓN</strong>";
+
+
+    document
+      .getElementById(
+        "resumenGuardado"
+      )
+      .innerHTML =
+
+      "📋 ID: " +
+      evaluacion.id +
+
+      "<br>📍 GPS: " +
+
+      gps.latitud.toFixed(6) +
+      ", " +
+      gps.longitud.toFixed(6) +
+
+      "<br>🏙️ Municipio: " +
+      evaluacion.municipio +
+
+      "<br>⚠️ Daño: " +
+      evaluacion.nivel +
+
+      "<br>📸 Fotografías: " +
+      fotografias.length;
+
+
+    actualizarBotonPendientes();
+
+
+  } catch (error) {
+
+    alert(
+      "No fue posible guardar la evaluación: " +
+      error.message
+    );
+
+  }
+
+
+  boton.disabled = false;
+
+  boton.innerHTML =
+    "💾 GUARDAR EVALUACIÓN";
+
+}
+
+
+/* =========================================================
+   BOTÓN PENDIENTES
+   ========================================================= */
+
+function actualizarBotonPendientes() {
+
+  const cantidad =
+    obtenerEvaluaciones()
+      .filter(function(e) {
+
+        return !e.sincronizado;
+
+      }).length;
+
+
+  const boton =
+    document.getElementById(
+      "botonPendientes"
+    );
+
+
+  boton.innerHTML =
+
+    "📦 EVALUACIONES PENDIENTES (" +
+    cantidad +
+    ")";
+
+}
+
+
+/* =========================================================
+   NUEVA EVALUACIÓN
+   ========================================================= */
+
+function nuevaEvaluacion() {
+
+  document
+    .querySelectorAll(
+      "input, textarea"
+    )
+    .forEach(function(campo) {
+
+      if (
+        campo.type === "checkbox"
+      ) {
+
+        campo.checked = false;
+
+      } else if (
+        campo.type !== "file"
+      ) {
+
+        campo.value = "";
+
       }
 
-      navigator.geolocation.getCurrentPosition(
+    });
 
-        function(posicion) {
 
-          const latitud =
-            posicion.coords.latitude;
+  document
+    .getElementById("tipo")
+    .value = "";
 
-          const longitud =
-            posicion.coords.longitude;
 
-          const precision =
-            posicion.coords.accuracy;
+  document
+    .getElementById("nivel")
+    .value = "";
 
-          resultado.innerHTML =
 
-            "📍 <strong>GPS obtenido</strong><br><br>" +
+  document
+    .getElementById("heridos")
+    .value = "No";
 
-            "Latitud: " +
-            latitud +
-            "<br>" +
 
-            "Longitud: " +
-            longitud +
-            "<br>" +
+  document
+    .getElementById("atrapados")
+    .value = "No";
 
-            "Precisión: " +
-            Math.round(precision) +
-            " metros";
 
-        },
+  gps = {
 
-        function(error) {
+    latitud: null,
+    longitud: null,
+    precision: null
 
-          resultado.innerHTML =
-            "❌ No fue posible obtener el GPS.<br><br>" +
-            "Verifique que la ubicación del teléfono esté activada.";
+  };
 
-        },
 
-        {
-          enableHighAccuracy: true,
-          timeout: 30000,
-          maximumAge: 0
-        }
+  document
+    .getElementById(
+      "resultadoGPS"
+    )
+    .style.display = "none";
 
-      );
+
+  document
+    .getElementById(
+      "botonContinuarGPS"
+    )
+    .style.display = "none";
+
+
+  mostrarPantalla(
+    "pantallaGPS"
+  );
+
+
+  actualizarPaso(1);
+
+}
+
+
+/* =========================================================
+   VER PENDIENTES
+   ========================================================= */
+
+function verPendientes() {
+
+  const lista =
+    obtenerEvaluaciones()
+      .filter(function(e) {
+
+        return !e.sincronizado;
+
+      });
+
+
+  if (lista.length === 0) {
+
+    alert(
+      "No hay evaluaciones pendientes."
+    );
+
+    return;
+
+  }
+
+
+  let texto =
+    "📦 EVALUACIONES PENDIENTES\n\n";
+
+
+  lista.forEach(function(e, indice) {
+
+    texto +=
+
+      (indice + 1) +
+      ". " +
+
+      e.municipio +
+
+      " — " +
+
+      e.nivel +
+
+      "\n" +
+
+      "📍 " +
+
+      e.gps.latitud.toFixed(6) +
+
+      ", " +
+
+      e.gps.longitud.toFixed(6) +
+
+      "\n\n";
+
+  });
+
+
+  alert(texto);
+
+}
+
+
+/* =========================================================
+   SERVICE WORKER
+   ========================================================= */
+
+if (
+  "serviceWorker" in navigator
+) {
+
+  window.addEventListener(
+    "load",
+    function() {
+
+      navigator.serviceWorker
+        .register("./sw.js")
+        .then(function() {
+
+          console.log(
+            "Service Worker registrado correctamente."
+          );
+
+        })
+        .catch(function(error) {
+
+          console.error(
+            "Error Service Worker:",
+            error
+          );
+
+        });
 
     }
+  );
+
+}
 
 
-    // =====================================================
-    // SERVICE WORKER
-    // =====================================================
+/* =========================================================
+   INICIO
+   ========================================================= */
 
-    if ("serviceWorker" in navigator) {
+actualizarConexion();
 
-      window.addEventListener(
-        "load",
-        function() {
+actualizarBotonPendientes();
 
-          navigator.serviceWorker
-            .register("./sw.js")
-            .then(function() {
-
-              console.log(
-                "Service Worker registrado correctamente"
-              );
-
-            })
-            .catch(function(error) {
-
-              console.error(
-                "Error registrando Service Worker:",
-                error
-              );
-
-            });
-
-        }
-      );
-
-    }
-
-
-    // =====================================================
-    // INICIO
-    // =====================================================
-
-    actualizarConexion();
-
-  </script>
+</script>
 
 </body>
 
