@@ -1,1 +1,2837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
 
+  <base target="_top">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Evaluación Post-Sismo Offline V2</title>
+
+  <style>
+
+    *{
+      box-sizing:border-box;
+    }
+
+    :root{
+      --fondo:#eef3f7;
+      --tarjeta:#ffffff;
+      --texto:#183042;
+      --suave:#607080;
+      --azul:#1976d2;
+      --azulOscuro:#0d47a1;
+      --morado:#7b1fa2;
+      --verde:#2e7d32;
+      --naranja:#ef6c00;
+      --borde:#d9e2ea;
+      --sombra:0 10px 28px rgba(24,48,66,.12);
+      --radio:22px;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(
+        180deg,
+        #f5f8fa 0%,
+        var(--fondo) 100%
+      );
+      color:var(--texto);
+    }
+
+    body{
+      min-height:100vh;
+    }
+
+    .pantalla{
+      display:none;
+      width:100%;
+      min-height:100vh;
+      padding:18px 12px 30px;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .pantalla.activa{
+      display:flex;
+    }
+
+    .contenido{
+      width:100%;
+      max-width:720px;
+    }
+
+    .tituloPrincipal{
+      width:100%;
+      background:var(--tarjeta);
+      border-radius:26px;
+      box-shadow:var(--sombra);
+      text-align:center;
+      padding:25px 17px 22px;
+      margin-bottom:14px;
+      border:1px solid rgba(255,255,255,.9);
+    }
+
+    .tituloPrincipal h1{
+      font-size:48px;
+      line-height:1.12;
+      margin:0 0 12px;
+      color:#173b56;
+    }
+
+    .tituloPrincipal p{
+      font-size:31px;
+      line-height:1.3;
+      margin:0;
+      font-weight:bold;
+      color:var(--suave);
+    }
+
+    .ventana{
+      width:100%;
+      background:var(--tarjeta);
+      border-radius:var(--radio);
+      padding:24px 18px 22px;
+      box-shadow:var(--sombra);
+      border:1px solid var(--borde);
+      border-top:8px solid var(--azul);
+    }
+
+    .gps{
+      border-top-color:var(--azul);
+    }
+
+    .fotos{
+      border-top-color:var(--morado);
+    }
+
+    .formulario{
+      border-top-color:var(--verde);
+    }
+
+    .pendientes{
+      border-top-color:var(--naranja);
+    }
+
+    .paso{
+      text-align:center;
+      font-size:29px;
+      line-height:1.2;
+      font-weight:bold;
+      margin-bottom:13px;
+      color:var(--suave);
+      letter-spacing:.5px;
+    }
+
+    .cabecera{
+      font-size:42px;
+      line-height:1.15;
+      font-weight:bold;
+      text-align:center;
+      padding:17px 10px;
+      margin-bottom:18px;
+      border-radius:16px;
+    }
+
+    .cabeceraGPS{
+      background:#e8f4fd;
+      color:var(--azulOscuro);
+    }
+
+    .cabeceraFotos{
+      background:#f5eafa;
+      color:#5e177b;
+    }
+
+    .cabeceraFormulario{
+      background:#e9f6eb;
+      color:#1b5e20;
+    }
+
+    .cabeceraPendientes{
+      background:#fff3e3;
+      color:#d35400;
+    }
+
+    .estado,
+    .estadoFormulario{
+      font-size:31px;
+      line-height:1.3;
+      font-weight:bold;
+      text-align:center;
+      margin-bottom:18px;
+      padding:17px 14px;
+      border-radius:15px;
+      background:#f1f4f6;
+      border:1px solid var(--borde);
+    }
+
+    .exito{
+      background:#eaf7ec;
+      color:#1b5e20;
+      border-color:#b9dfbf;
+    }
+
+    .error{
+      background:#fff0f1;
+      color:#b71c1c;
+      border-color:#f1b9bd;
+    }
+
+    .aviso{
+      background:#fff5e8;
+      color:#a84400;
+      border-color:#f1cd9f;
+    }
+
+    .coordenadas{
+      font-size:37px;
+      line-height:1.35;
+      font-weight:bold;
+      text-align:center;
+      padding:18px 10px;
+      margin:16px 0;
+      border-radius:15px;
+      background:#edf7ff;
+      color:#174c73;
+      border:1px solid #cce5f8;
+      word-break:break-word;
+    }
+
+    .precision{
+      font-size:29px;
+      line-height:1.3;
+      font-weight:bold;
+      text-align:center;
+      margin:15px 0;
+      color:#526575;
+    }
+
+    button{
+      width:100%;
+      min-height:78px;
+      border:none;
+      border-radius:15px;
+      font-size:32px;
+      line-height:1.18;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:13px;
+      padding:15px 12px;
+      box-shadow:0 4px 10px rgba(0,0,0,.09);
+      transition:transform .08s ease;
+    }
+
+    button:active{
+      transform:scale(.99);
+    }
+
+    button:disabled{
+      background:#9aa4aa!important;
+      color:#f5f5f5!important;
+      cursor:not-allowed;
+      opacity:.8;
+      box-shadow:none;
+    }
+
+    .botonGPS{
+      background:var(--azul);
+      color:#fff;
+    }
+
+    .botonFoto{
+      background:var(--morado);
+      color:#fff;
+    }
+
+    .botonFormulario{
+      background:var(--verde);
+      color:#fff;
+    }
+
+    .botonContinuarGPS{
+      background:var(--azul);
+      color:#fff;
+    }
+
+    .botonContinuarFotos{
+      background:var(--morado);
+      color:#fff;
+    }
+
+    .botonVolver{
+      background:#66727a;
+      color:#fff;
+    }
+
+    .botonGuardar{
+      background:#1565c0;
+      color:#fff;
+    }
+
+    .botonSincronizar{
+      background:var(--naranja);
+      color:#fff;
+    }
+
+    .botonPendientes{
+      background:#8e24aa;
+      color:#fff;
+    }
+
+    .fotoInfo,
+    .formularioInfo{
+      font-size:30px;
+      line-height:1.4;
+      text-align:center;
+      margin-bottom:15px;
+      color:#526575;
+    }
+
+    .fotoContador{
+      font-size:34px;
+      line-height:1.25;
+      font-weight:bold;
+      text-align:center;
+      padding:16px 10px;
+      margin:15px 0;
+      border-radius:15px;
+      background:#f7edfa;
+      color:#5e177b;
+      border:1px solid #e3cbe9;
+    }
+
+    .fotoLista{
+      margin-top:18px;
+    }
+
+    .fotoItem{
+      background:#fbfcfd;
+      border:2px solid #dce4e9;
+      border-radius:15px;
+      padding:12px;
+      margin-bottom:13px;
+      text-align:center;
+      font-size:29px;
+      line-height:1.25;
+      font-weight:bold;
+    }
+
+    .fotoItem img{
+      width:100%;
+      max-height:270px;
+      object-fit:contain;
+      border-radius:11px;
+      margin-bottom:9px;
+    }
+
+    .oculto{
+      display:none!important;
+    }
+
+    #entradaFoto{
+      display:none;
+    }
+
+    .campo{
+      margin:16px 0 20px;
+    }
+
+    .campo label{
+      display:block;
+      font-size:28px;
+      font-weight:bold;
+      margin-bottom:8px;
+      line-height:1.25;
+      color:#27465b;
+    }
+
+    .campo input,
+    .campo select,
+    .campo textarea{
+      width:100%;
+      font-family:Arial,sans-serif;
+      font-size:28px;
+      padding:15px;
+      border:2px solid #c7d2da;
+      border-radius:13px;
+      background:#fff;
+      color:#183042;
+      outline:none;
+    }
+
+    .campo input:focus,
+    .campo select:focus,
+    .campo textarea:focus{
+      border-color:#64a9dc;
+      box-shadow:0 0 0 3px rgba(25,118,210,.10);
+    }
+
+    .campo textarea{
+      min-height:135px;
+      resize:vertical;
+    }
+
+    .campo select{
+      min-height:62px;
+    }
+
+    .grupoTitulo{
+      font-size:31px;
+      line-height:1.2;
+      font-weight:bold;
+      background:#edf7ef;
+      color:#245d2a;
+      padding:14px 13px;
+      border-radius:13px;
+      margin:25px 0 13px;
+      border-left:6px solid #43a047;
+    }
+
+    .opciones{
+      background:#fafcfd;
+      border:1px solid #e1e8ed;
+      border-radius:13px;
+      overflow:hidden;
+    }
+
+    .opciones label{
+      display:block;
+      font-size:27px;
+      line-height:1.3;
+      padding:13px 9px;
+      border-bottom:1px solid #e1e8ed;
+    }
+
+    .opciones label:last-child{
+      border-bottom:none;
+    }
+
+    .opciones input{
+      width:27px;
+      height:27px;
+      vertical-align:middle;
+      margin-right:10px;
+    }
+
+    .estadoRed{
+      font-size:24px;
+      font-weight:bold;
+      text-align:center;
+      padding:11px;
+      border-radius:13px;
+      margin:0 0 14px;
+      background:#edf1f3;
+      border:1px solid #d5dde2;
+    }
+
+    .online{
+      background:#eaf7ec;
+      color:#1b5e20;
+      border-color:#b9dfbf;
+    }
+
+    .offline{
+      background:#fff0f1;
+      color:#b71c1c;
+      border-color:#efbfc2;
+    }
+
+    .resumen{
+      font-size:27px;
+      line-height:1.4;
+      background:#f5f8fa;
+      border:1px solid #dce5eb;
+      border-radius:13px;
+      padding:14px;
+      margin-top:17px;
+    }
+
+    .listaPendientes{
+      font-size:26px;
+      line-height:1.4;
+    }
+
+    .pendienteItem{
+      background:#fff8ee;
+      border:2px solid #f2c58c;
+      border-radius:13px;
+      padding:14px;
+      margin:11px 0;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:8px;
+      font-size:22px;
+      font-weight:bold;
+      background:#f2a900;
+      color:#fff;
+      margin-top:5px;
+    }
+
+    .ayuda{
+      background:#fff;
+      border:1px solid var(--borde);
+      border-radius:17px;
+      padding:17px 14px;
+      text-align:center;
+      font-size:27px;
+      line-height:1.4;
+      color:#5a6b77;
+      box-shadow:0 5px 16px rgba(24,48,66,.07);
+      margin-top:13px;
+    }
+
+    .icono{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:1.15em;
+      height:1.15em;
+      margin-right:.22em;
+      vertical-align:-.12em;
+      font-size:1em;
+    }
+
+    .botonIcono{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    @media(max-height:650px){
+
+      .pantalla{
+        align-items:flex-start;
+      }
+
+      .tituloPrincipal{
+        padding:18px 12px;
+      }
+
+      .tituloPrincipal h1{
+        font-size:40px;
+      }
+
+      .tituloPrincipal p{
+        font-size:27px;
+      }
+
+      .ventana{
+        padding:18px 14px;
+      }
+
+      .paso{
+        font-size:26px;
+      }
+
+      .cabecera{
+        font-size:36px;
+        padding:13px 8px;
+      }
+
+      .estado,
+      .estadoFormulario{
+        font-size:30px;
+        padding:14px 11px;
+      }
+
+      .coordenadas{
+        font-size:34px;
+      }
+
+      .precision{
+        font-size:27px;
+      }
+
+      .fotoInfo,
+      .formularioInfo{
+        font-size:27px;
+      }
+
+      .fotoContador{
+        font-size:31px;
+      }
+
+      .fotoItem{
+        font-size:27px;
+      }
+
+      .ayuda{
+        font-size:26px;
+      }
+
+      button{
+        min-height:68px;
+        font-size:29px;
+      }
+
+      .campo label{
+        font-size:26px;
+      }
+
+      .campo input,
+      .campo select,
+      .campo textarea{
+        font-size:25px;
+      }
+
+      .opciones label{
+        font-size:25px;
+      }
+
+      .grupoTitulo{
+        font-size:28px;
+      }
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+<!-- =========================================================
+     PANTALLA 1 - GPS
+     ========================================================= -->
+
+<section id="pantallaGPS"
+         class="pantalla activa">
+
+  <div class="contenido">
+
+    <div class="tituloPrincipal">
+
+      <h1>
+        🏚️ EVALUACIÓN POST-SISMO
+      </h1>
+
+      <p>
+        MODO SIN CONEXIÓN
+      </p>
+
+    </div>
+
+
+    <div class="ventana gps">
+
+      <div class="cabecera cabeceraGPS">
+
+        📍 UBICACIÓN DEL INMUEBLE
+
+      </div>
+
+
+      <div id="estadoRed"
+           class="estadoRed">
+
+        📡 Comprobando conexión...
+
+      </div>
+
+
+      <div class="paso">
+
+        PASO 1 DE 3
+
+      </div>
+
+
+      <div id="estadoGPS"
+           class="estado">
+
+        📍 Presione el botón para obtener la ubicación.
+
+      </div>
+
+
+      <div id="coordenadas"
+           class="coordenadas oculto">
+      </div>
+
+
+      <div id="precision"
+           class="precision oculto">
+      </div>
+
+
+      <button
+        id="btnGPS"
+        class="botonGPS botonIcono"
+        onclick="obtenerGPS()">
+
+        📍 OBTENER UBICACIÓN GPS
+
+      </button>
+
+
+      <button
+        id="btnContinuarGPS"
+        class="botonContinuarGPS botonIcono oculto"
+        onclick="irAFotos()">
+
+        📷 CONTINUAR A FOTOGRAFÍAS
+
+      </button>
+
+
+      <button
+        class="botonPendientes botonIcono"
+        onclick="mostrarPendientes()">
+
+        📋 EVALUACIONES GUARDADAS
+
+      </button>
+
+    </div>
+
+
+    <div class="ayuda">
+
+      💡 <strong>Importante:</strong><br>
+
+      Esta versión permite trabajar aunque
+      no haya señal de internet.
+
+      <br><br>
+
+      📱 Los datos quedan guardados
+      en este teléfono hasta que puedan
+      sincronizarse.
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PANTALLA 2 - FOTOGRAFÍAS
+     ========================================================= -->
+
+<section id="pantallaFotos"
+         class="pantalla">
+
+  <div class="contenido">
+
+    <div class="tituloPrincipal">
+
+      <h1>
+        📷 REGISTRO FOTOGRÁFICO
+      </h1>
+
+      <p>
+        FOTOGRAFÍAS DEL INMUEBLE
+      </p>
+
+    </div>
+
+
+    <div class="ventana fotos">
+
+      <div class="cabecera cabeceraFotos">
+
+        📷 FOTOGRAFÍAS
+
+      </div>
+
+
+      <div class="paso">
+
+        PASO 2 DE 3
+
+      </div>
+
+
+      <div class="fotoInfo">
+
+        Tome hasta 3 fotografías
+        del inmueble.
+
+      </div>
+
+
+      <div id="fotoContador"
+           class="fotoContador">
+
+        📷 0 DE 3 FOTOGRAFÍAS
+
+      </div>
+
+
+      <input
+        type="file"
+        id="entradaFoto"
+        accept="image/*"
+        capture="environment"
+        onchange="agregarFoto(event)">
+
+
+      <button
+        class="botonFoto botonIcono"
+        onclick="document.getElementById('entradaFoto').click()">
+
+        📸 TOMAR FOTOGRAFÍA
+
+      </button>
+
+
+      <div id="fotoLista"
+           class="fotoLista">
+      </div>
+
+
+      <button
+        id="btnContinuarFotos"
+        class="botonContinuarFotos botonIcono"
+        onclick="irAFormulario()">
+
+        📝 CONTINUAR AL FORMULARIO
+
+      </button>
+
+
+      <button
+        class="botonVolver botonIcono"
+        onclick="irAGPS()">
+
+        ↩️ VOLVER
+
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PANTALLA 3 - FORMULARIO
+     ========================================================= -->
+
+<section id="pantallaFormulario"
+         class="pantalla">
+
+  <div class="contenido">
+
+    <div class="tituloPrincipal">
+
+      <h1>
+        📝 EVALUACIÓN POST-SISMO
+      </h1>
+
+      <p>
+        FORMULARIO SIN CONEXIÓN
+      </p>
+
+    </div>
+
+
+    <div class="ventana formulario">
+
+      <div class="cabecera cabeceraFormulario">
+
+        📝 EVALUACIÓN DEL INMUEBLE
+
+      </div>
+
+
+      <div class="paso">
+
+        PASO 3 DE 3
+
+      </div>
+
+
+      <div id="estadoFormulario"
+           class="estadoFormulario">
+
+        💾 Complete la información y
+        guarde la evaluación.
+
+      </div>
+
+
+      <form id="formularioOffline"
+            onsubmit="guardarEvaluacion(event)">
+
+
+        <!-- =================================================
+             DATOS DEL EVALUADOR
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          👷 DATOS DEL EVALUADOR
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            👤 Nombre del evaluador
+          </label>
+
+          <input
+            type="text"
+            id="nombreEvaluador"
+            required>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🏢 Cargo / entidad
+          </label>
+
+          <input
+            type="text"
+            id="cargoEntidad"
+            required>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            📱 Número celular
+          </label>
+
+          <input
+            type="tel"
+            id="celular">
+
+        </div>
+
+
+
+        <!-- =================================================
+             UBICACIÓN
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          📍 UBICACIÓN DEL INMUEBLE
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🏙️ Municipio
+          </label>
+
+          <input
+            type="text"
+            id="municipio"
+            required>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            📍 Dirección o ubicación del inmueble
+          </label>
+
+          <input
+            type="text"
+            id="direccion"
+            required>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            📌 Barrio / sector
+          </label>
+
+          <input
+            type="text"
+            id="sector">
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🛰️ Coordenadas GPS
+          </label>
+
+          <input
+            type="text"
+            id="coordenadasFormulario"
+            readonly>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CARACTERÍSTICAS
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          🏠 CARACTERÍSTICAS DE LA EDIFICACIÓN
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🏠 Tipo de edificación
+          </label>
+
+          <select id="tipoEdificacion">
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>
+              Vivienda
+            </option>
+
+            <option>
+              Edificio residencial
+            </option>
+
+            <option>
+              Comercio
+            </option>
+
+            <option>
+              Institución educativa
+            </option>
+
+            <option>
+              Hospital / centro de salud
+            </option>
+
+            <option>
+              Edificio público
+            </option>
+
+            <option>
+              Industria
+            </option>
+
+            <option>
+              Otra
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🏢 Número de pisos
+          </label>
+
+          <input
+            type="number"
+            id="pisos"
+            min="1">
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            👥 Número aproximado de personas presentes
+          </label>
+
+          <input
+            type="number"
+            id="personasPresentes"
+            min="0">
+
+        </div>
+
+
+
+        <!-- =================================================
+             NIVEL DE DAÑO
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          ⚠️ NIVEL DE DAÑO
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            ⚠️ Seleccione el nivel de daño observado
+          </label>
+
+          <select id="nivelDano"
+                  required>
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>
+              NIVEL 0 - SIN DAÑOS VISIBLES
+            </option>
+
+            <option>
+              NIVEL 1 - DAÑOS LEVES
+            </option>
+
+            <option>
+              NIVEL 2 - DAÑOS MODERADOS
+            </option>
+
+            <option>
+              NIVEL 3 - DAÑOS GRAVES
+            </option>
+
+            <option>
+              NO ES POSIBLE EVALUAR
+            </option>
+
+          </select>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CONDICIONES
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          🔎 CONDICIONES OBSERVADAS
+
+        </div>
+
+
+        <div class="opciones">
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Grietas superficiales">
+
+            Grietas superficiales
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Grietas diagonales en muros">
+
+            Grietas diagonales en muros
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Grietas en columnas o vigas">
+
+            Grietas en columnas o vigas
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Elementos desprendidos">
+
+            Elementos desprendidos
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Daños en cubierta">
+
+            Daños en cubierta
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Daños en pisos o escaleras">
+
+            Daños en pisos o escaleras
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Inclinación o desplazamiento">
+
+            Inclinación o desplazamiento
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="Colapso parcial">
+
+            Colapso parcial
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="condiciones"
+              value="No se observan daños visibles">
+
+            No se observan daños visibles
+          </label>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PERSONAS AFECTADAS
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          👥 PERSONAS AFECTADAS
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🩹 ¿Hay personas heridas?
+          </label>
+
+          <select id="personasHeridas">
+
+            <option>
+              No
+            </option>
+
+            <option>
+              Sí
+            </option>
+
+            <option>
+              No se sabe
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🩹 Número aproximado de personas heridas
+          </label>
+
+          <input
+            type="number"
+            id="numeroHeridos"
+            min="0">
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🆘 ¿Hay personas atrapadas?
+          </label>
+
+          <select id="personasAtrapadas">
+
+            <option>
+              No
+            </option>
+
+            <option>
+              Sí
+            </option>
+
+            <option>
+              No se sabe
+            </option>
+
+          </select>
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIESGOS
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          🚨 RIESGOS INMEDIATOS
+
+        </div>
+
+
+        <div class="opciones">
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Elementos con riesgo de caer">
+
+            ⚠️ Elementos con riesgo de caer
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Riesgo de colapso">
+
+            🏚️ Riesgo de colapso
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Olor a gas">
+
+            🛢️ Olor a gas
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Sospecha de fuga de gas">
+
+            🛢️ Sospecha de fuga de gas
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Riesgo de incendio">
+
+            🔥 Riesgo de incendio
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Cables eléctricos expuestos">
+
+            ⚡ Cables eléctricos expuestos
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Estructura inestable">
+
+            🏚️ Estructura inestable
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="riesgos"
+              value="Otro riesgo">
+
+            ⚠️ Otro riesgo
+          </label>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🚧 ¿Hay vías bloqueadas o dificultades de acceso?
+          </label>
+
+          <select id="viasBloqueadas">
+
+            <option>
+              No
+            </option>
+
+            <option>
+              Sí
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            ⚡ ¿Se observan problemas en los servicios públicos?
+          </label>
+
+          <select id="problemasServicios">
+
+            <option>
+              No
+            </option>
+
+            <option>
+              Sí
+            </option>
+
+            <option>
+              No se sabe
+            </option>
+
+          </select>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ENTIDADES
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          🏛️ ENTIDADES O SERVICIOS QUE PODRÍAN REQUERIRSE
+
+        </div>
+
+
+        <div class="opciones">
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Bomberos">
+
+            🚒 Bomberos
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Defensa Civil">
+
+            🦺 Defensa Civil
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Cruz Roja">
+
+            🏥 Cruz Roja
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Policía">
+
+            👮 Policía
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Alcaldía">
+
+            🏛️ Alcaldía
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Servicios públicos">
+
+            ⚡ Servicios públicos
+          </label>
+
+
+          <label>
+            <input
+              type="checkbox"
+              name="entidades"
+              value="Evaluación de ingeniería">
+
+            👷 Evaluación de ingeniería
+          </label>
+
+        </div>
+
+
+
+        <!-- =================================================
+             OBSERVACIONES
+             ================================================= -->
+
+        <div class="grupoTitulo">
+
+          🗒️ OBSERVACIONES
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            🗒️ Observaciones adicionales
+          </label>
+
+          <textarea id="observaciones"></textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            💡 Recomendaciones del evaluador
+          </label>
+
+          <textarea id="recomendaciones"></textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label>
+            ✅ Confirmación del evaluador
+          </label>
+
+          <select id="confirmacion"
+                  required>
+
+            <option value="">
+              Seleccione
+            </option>
+
+            <option>
+              Confirmo que la información registrada corresponde a la observación realizada.
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- =================================================
+             BOTONES
+             ================================================= -->
+
+        <button
+          type="submit"
+          class="botonGuardar botonIcono">
+
+          💾 GUARDAR EVALUACIÓN SIN CONEXIÓN
+
+        </button>
+
+
+        <button
+          type="button"
+          class="botonVolver botonIcono"
+          onclick="irAFotos()">
+
+          ↩️ VOLVER
+
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PANTALLA 4 - PENDIENTES
+     ========================================================= -->
+
+<section id="pantallaPendientes"
+         class="pantalla">
+
+  <div class="contenido">
+
+    <div class="tituloPrincipal">
+
+      <h1>
+        📋 EVALUACIONES GUARDADAS
+      </h1>
+
+      <p>
+        REGISTROS PENDIENTES DE SINCRONIZAR
+      </p>
+
+    </div>
+
+
+    <div class="ventana pendientes">
+
+      <div class="cabecera cabeceraPendientes">
+
+        📋 EVALUACIONES PENDIENTES
+
+      </div>
+
+
+      <div id="listaPendientes"
+           class="listaPendientes">
+
+        ⏳ Cargando...
+
+      </div>
+
+
+      <button
+        class="botonSincronizar botonIcono"
+        onclick="sincronizarPendientes()">
+
+        🔄 SINCRONIZAR PENDIENTES
+
+      </button>
+
+
+      <button
+        class="botonVolver botonIcono"
+        onclick="irAGPS()">
+
+        ↩️ VOLVER
+
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<script>
+
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+
+let latitud = null;
+let longitud = null;
+let precisionGPS = null;
+
+let fotografias = [];
+
+const MAX_FOTOS = 3;
+
+const DB_NAME = "POST_SISMO_OFFLINE_DB_V2";
+const DB_VERSION = 1;
+const STORE_NAME = "evaluaciones";
+
+let db = null;
+
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async function(){
+
+    await abrirDB();
+
+    actualizarEstadoRed();
+
+    window.addEventListener(
+      "online",
+      actualizarEstadoRed
+    );
+
+    window.addEventListener(
+      "offline",
+      actualizarEstadoRed
+    );
+
+  }
+);
+
+
+/* ============================================================
+   ESTADO DE INTERNET
+   ============================================================ */
+
+function actualizarEstadoRed(){
+
+  const elemento =
+    document.getElementById("estadoRed");
+
+  if(navigator.onLine){
+
+    elemento.innerHTML =
+      "🟢 CON CONEXIÓN A INTERNET";
+
+    elemento.className =
+      "estadoRed online";
+
+  }else{
+
+    elemento.innerHTML =
+      "🔴 SIN CONEXIÓN — MODO OFFLINE";
+
+    elemento.className =
+      "estadoRed offline";
+
+  }
+
+}
+
+
+/* ============================================================
+   CAMBIO DE PANTALLA
+   ============================================================ */
+
+function mostrarPantalla(id){
+
+  document
+    .querySelectorAll(".pantalla")
+    .forEach(
+      p => p.classList.remove("activa")
+    );
+
+  document
+    .getElementById(id)
+    .classList.add("activa");
+
+  window.scrollTo(0,0);
+
+}
+
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+
+function irAGPS(){
+
+  mostrarPantalla("pantallaGPS");
+
+}
+
+
+function irAFotos(){
+
+  if(
+    latitud === null ||
+    longitud === null
+  ){
+
+    alert(
+      "Primero debe obtener la ubicación GPS."
+    );
+
+    return;
+  }
+
+  mostrarPantalla("pantallaFotos");
+
+}
+
+
+function irAFormulario(){
+
+  document
+    .getElementById(
+      "coordenadasFormulario"
+    )
+    .value =
+      latitud +
+      ", " +
+      longitud;
+
+  mostrarPantalla(
+    "pantallaFormulario"
+  );
+
+}
+
+
+/* ============================================================
+   GPS
+   ============================================================ */
+
+function obtenerGPS(){
+
+  const estado =
+    document.getElementById("estadoGPS");
+
+  const boton =
+    document.getElementById("btnGPS");
+
+  if(
+    !navigator.geolocation
+  ){
+
+    estado.innerHTML =
+      "❌ Este dispositivo no permite obtener GPS.";
+
+    estado.className =
+      "estado error";
+
+    return;
+  }
+
+
+  boton.disabled = true;
+
+  boton.innerHTML =
+    "⏳ OBTENIENDO UBICACIÓN...";
+
+  estado.innerHTML =
+    "🛰️ Buscando ubicación GPS...";
+
+  estado.className =
+    "estado aviso";
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(posicion){
+
+      latitud =
+        posicion.coords.latitude;
+
+      longitud =
+        posicion.coords.longitude;
+
+      precisionGPS =
+        posicion.coords.accuracy;
+
+
+      document
+        .getElementById("coordenadas")
+        .innerHTML =
+          "📍 Latitud: " +
+          latitud.toFixed(6) +
+          "<br>" +
+          "📍 Longitud: " +
+          longitud.toFixed(6);
+
+
+      document
+        .getElementById("coordenadas")
+        .classList.remove("oculto");
+
+
+      document
+        .getElementById("precision")
+        .innerHTML =
+          "🎯 Precisión aproximada: " +
+          Math.round(precisionGPS) +
+          " metros";
+
+
+      document
+        .getElementById("precision")
+        .classList.remove("oculto");
+
+
+      estado.innerHTML =
+        "✅ UBICACIÓN OBTENIDA CORRECTAMENTE";
+
+      estado.className =
+        "estado exito";
+
+
+      boton.disabled = false;
+
+      boton.innerHTML =
+        "📍 ACTUALIZAR UBICACIÓN GPS";
+
+
+      document
+        .getElementById(
+          "btnContinuarGPS"
+        )
+        .classList.remove("oculto");
+
+    },
+
+    function(error){
+
+      boton.disabled = false;
+
+      boton.innerHTML =
+        "📍 INTENTAR GPS NUEVAMENTE";
+
+
+      estado.className =
+        "estado error";
+
+
+      if(
+        error.code === 1
+      ){
+
+        estado.innerHTML =
+          "❌ Debe permitir el acceso a la ubicación.";
+
+      }else if(
+        error.code === 2
+      ){
+
+        estado.innerHTML =
+          "❌ No fue posible determinar la ubicación.";
+
+      }else if(
+        error.code === 3
+      ){
+
+        estado.innerHTML =
+          "⏳ El GPS tardó demasiado. Intente nuevamente.";
+
+      }else{
+
+        estado.innerHTML =
+          "❌ No fue posible obtener el GPS.";
+
+      }
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:30000,
+      maximumAge:0
+    }
+
+  );
+
+}
+
+
+/* ============================================================
+   FOTOGRAFÍAS
+   ============================================================ */
+
+function agregarFoto(event){
+
+  const archivo =
+    event.target.files[0];
+
+  if(!archivo){
+
+    return;
+  }
+
+
+  if(
+    fotografias.length >= MAX_FOTOS
+  ){
+
+    alert(
+      "Solo puede guardar un máximo de 3 fotografías."
+    );
+
+    event.target.value = "";
+
+    return;
+  }
+
+
+  const lector =
+    new FileReader();
+
+
+  lector.onload = function(e){
+
+    comprimirImagen(
+      e.target.result,
+      function(imagenBase64){
+
+        fotografias.push({
+
+          data: imagenBase64,
+
+          tipo:"image/jpeg",
+
+          nombre:
+            "foto_" +
+            (fotografias.length + 1) +
+            ".jpg"
+
+        });
+
+
+        actualizarFotos();
+
+      }
+    );
+
+  };
+
+
+  lector.readAsDataURL(archivo);
+
+  event.target.value = "";
+
+}
+
+
+/* ============================================================
+   COMPRESIÓN DE IMÁGENES
+   ============================================================ */
+
+function comprimirImagen(
+  dataURL,
+  callback
+){
+
+  const img =
+    new Image();
+
+
+  img.onload = function(){
+
+    const max =
+      1280;
+
+
+    let ancho =
+      img.width;
+
+    let alto =
+      img.height;
+
+
+    if(
+      ancho > max ||
+      alto > max
+    ){
+
+      if(ancho > alto){
+
+        alto =
+          Math.round(
+            alto * max / ancho
+          );
+
+        ancho = max;
+
+      }else{
+
+        ancho =
+          Math.round(
+            ancho * max / alto
+          );
+
+        alto = max;
+
+      }
+
+    }
+
+
+    const canvas =
+      document.createElement("canvas");
+
+
+    canvas.width = ancho;
+    canvas.height = alto;
+
+
+    const ctx =
+      canvas.getContext("2d");
+
+
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      ancho,
+      alto
+    );
+
+
+    callback(
+      canvas.toDataURL(
+        "image/jpeg",
+        0.75
+      )
+    );
+
+  };
+
+
+  img.src = dataURL;
+
+}
+
+
+/* ============================================================
+   MOSTRAR FOTOGRAFÍAS
+   ============================================================ */
+
+function actualizarFotos(){
+
+  const lista =
+    document.getElementById(
+      "fotoLista"
+    );
+
+
+  const contador =
+    document.getElementById(
+      "fotoContador"
+    );
+
+
+  contador.innerHTML =
+    "📷 " +
+    fotografias.length +
+    " DE " +
+    MAX_FOTOS +
+    " FOTOGRAFÍAS";
+
+
+  lista.innerHTML = "";
+
+
+  fotografias.forEach(
+    function(foto,index){
+
+      const div =
+        document.createElement("div");
+
+
+      div.className =
+        "fotoItem";
+
+
+      div.innerHTML =
+
+        "<img src='" +
+        foto.data +
+        "'>" +
+
+        "<br>" +
+
+        "📷 Fotografía " +
+        (index + 1);
+
+      lista.appendChild(div);
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   INDEXED DB
+   ============================================================ */
+
+function abrirDB(){
+
+  return new Promise(
+    function(resolve,reject){
+
+      const solicitud =
+        indexedDB.open(
+          DB_NAME,
+          DB_VERSION
+        );
+
+
+      solicitud.onupgradeneeded =
+        function(event){
+
+          const base =
+            event.target.result;
+
+
+          if(
+            !base.objectStoreNames.contains(
+              STORE_NAME
+            )
+          ){
+
+            base.createObjectStore(
+              STORE_NAME,
+              {
+                keyPath:"id"
+              }
+            );
+
+          }
+
+        };
+
+
+      solicitud.onsuccess =
+        function(event){
+
+          db =
+            event.target.result;
+
+          resolve(db);
+
+        };
+
+
+      solicitud.onerror =
+        function(){
+
+          reject(
+            solicitud.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   GUARDAR EN INDEXED DB
+   ============================================================ */
+
+function guardarEnDB(evaluacion){
+
+  return new Promise(
+    function(resolve,reject){
+
+      const transaccion =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+
+      const store =
+        transaccion.objectStore(
+          STORE_NAME
+        );
+
+
+      const solicitud =
+        store.put(
+          evaluacion
+        );
+
+
+      solicitud.onsuccess =
+        function(){
+
+          resolve();
+
+        };
+
+
+      solicitud.onerror =
+        function(){
+
+          reject(
+            solicitud.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   LEER TODAS LAS EVALUACIONES
+   ============================================================ */
+
+function leerEvaluaciones(){
+
+  return new Promise(
+    function(resolve,reject){
+
+      const transaccion =
+        db.transaction(
+          STORE_NAME,
+          "readonly"
+        );
+
+
+      const store =
+        transaccion.objectStore(
+          STORE_NAME
+        );
+
+
+      const solicitud =
+        store.getAll();
+
+
+      solicitud.onsuccess =
+        function(){
+
+          resolve(
+            solicitud.result || []
+          );
+
+        };
+
+
+      solicitud.onerror =
+        function(){
+
+          reject(
+            solicitud.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   GENERAR ID
+   ============================================================ */
+
+function generarID(){
+
+  const fecha =
+    new Date();
+
+  const parteFecha =
+    fecha
+      .toISOString()
+      .replace(
+        /[-:TZ.]/g,
+        ""
+      )
+      .slice(0,14);
+
+
+  const aleatorio =
+    Math.floor(
+      Math.random() * 100000
+    );
+
+
+  return (
+    "PS-" +
+    parteFecha +
+    "-" +
+    aleatorio
+  );
+
+}
+
+
+/* ============================================================
+   OBTENER CHECKBOXES
+   ============================================================ */
+
+function obtenerSeleccionados(nombre){
+
+  return Array
+    .from(
+      document.querySelectorAll(
+        'input[name="' +
+        nombre +
+        '"]:checked'
+      )
+    )
+    .map(
+      input => input.value
+    );
+
+}
+
+
+/* ============================================================
+   GUARDAR EVALUACIÓN
+   ============================================================ */
+
+async function guardarEvaluacion(event){
+
+  event.preventDefault();
+
+
+  const estado =
+    document.getElementById(
+      "estadoFormulario"
+    );
+
+
+  try{
+
+    const evaluacion = {
+
+      id:
+        generarID(),
+
+      fechaHora:
+        new Date().toISOString(),
+
+      estado:
+        "PENDIENTE",
+
+      sincronizado:
+        false,
+
+
+      latitud:
+        latitud,
+
+      longitud:
+        longitud,
+
+      precisionGPS:
+        precisionGPS,
+
+      coordenadas:
+        latitud +
+        ", " +
+        longitud,
+
+
+      fotografias:
+        fotografias,
+
+
+      datos:{
+
+        nombreEvaluador:
+          document.getElementById(
+            "nombreEvaluador"
+          ).value,
+
+        cargoEntidad:
+          document.getElementById(
+            "cargoEntidad"
+          ).value,
+
+        celular:
+          document.getElementById(
+            "celular"
+          ).value,
+
+        municipio:
+          document.getElementById(
+            "municipio"
+          ).value,
+
+        direccion:
+          document.getElementById(
+            "direccion"
+          ).value,
+
+        sector:
+          document.getElementById(
+            "sector"
+          ).value,
+
+        tipoEdificacion:
+          document.getElementById(
+            "tipoEdificacion"
+          ).value,
+
+        pisos:
+          document.getElementById(
+            "pisos"
+          ).value,
+
+        personasPresentes:
+          document.getElementById(
+            "personasPresentes"
+          ).value,
+
+        nivelDano:
+          document.getElementById(
+            "nivelDano"
+          ).value,
+
+        condiciones:
+          obtenerSeleccionados(
+            "condiciones"
+          ),
+
+        personasHeridas:
+          document.getElementById(
+            "personasHeridas"
+          ).value,
+
+        numeroHeridos:
+          document.getElementById(
+            "numeroHeridos"
+          ).value,
+
+        personasAtrapadas:
+          document.getElementById(
+            "personasAtrapadas"
+          ).value,
+
+        riesgos:
+          obtenerSeleccionados(
+            "riesgos"
+          ),
+
+        viasBloqueadas:
+          document.getElementById(
+            "viasBloqueadas"
+          ).value,
+
+        problemasServicios:
+          document.getElementById(
+            "problemasServicios"
+          ).value,
+
+        entidades:
+          obtenerSeleccionados(
+            "entidades"
+          ),
+
+        observaciones:
+          document.getElementById(
+            "observaciones"
+          ).value,
+
+        recomendaciones:
+          document.getElementById(
+            "recomendaciones"
+          ).value,
+
+        confirmacion:
+          document.getElementById(
+            "confirmacion"
+          ).value
+
+      }
+
+    };
+
+
+    await guardarEnDB(
+      evaluacion
+    );
+
+
+    estado.innerHTML =
+      "✅ EVALUACIÓN GUARDADA CORRECTAMENTE";
+
+    estado.className =
+      "estadoFormulario exito";
+
+
+    alert(
+      "✅ La evaluación quedó guardada en este teléfono.\n\n" +
+      "Podrá sincronizarse cuando vuelva la conexión."
+    );
+
+
+    document
+      .getElementById(
+        "formularioOffline"
+      )
+      .reset();
+
+
+    fotografias = [];
+
+
+    actualizarFotos();
+
+
+    setTimeout(
+      function(){
+
+        irAGPS();
+
+      },
+      500
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    estado.innerHTML =
+      "❌ NO FUE POSIBLE GUARDAR LA EVALUACIÓN";
+
+    estado.className =
+      "estadoFormulario error";
+
+
+    alert(
+      "No fue posible guardar la evaluación."
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   MOSTRAR PENDIENTES
+   ============================================================ */
+
+async function mostrarPendientes(){
+
+  mostrarPantalla(
+    "pantallaPendientes"
+  );
+
+
+  await cargarPendientes();
+
+}
+
+
+/* ============================================================
+   CARGAR PENDIENTES
+   ============================================================ */
+
+async function cargarPendientes(){
+
+  const lista =
+    document.getElementById(
+      "listaPendientes"
+    );
+
+
+  try{
+
+    const evaluaciones =
+      await leerEvaluaciones();
+
+
+    if(
+      evaluaciones.length === 0
+    ){
+
+      lista.innerHTML =
+        "<div class='resumen'>" +
+        "📭 No hay evaluaciones pendientes." +
+        "</div>";
+
+      return;
+
+    }
+
+
+    lista.innerHTML =
+      "";
+
+
+    evaluaciones.forEach(
+      function(ev){
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "pendienteItem";
+
+
+        const fecha =
+          new Date(
+            ev.fechaHora
+          ).toLocaleString(
+            "es-CO"
+          );
+
+
+        div.innerHTML =
+
+          "<strong>📋 ID:</strong> " +
+          ev.id +
+
+          "<br><br>" +
+
+          "<strong>📅 Fecha:</strong> " +
+          fecha +
+
+          "<br>" +
+
+          "<strong>📍 Ubicación:</strong> " +
+          ev.coordenadas +
+
+          "<br>" +
+
+          "<strong>🏙️ Municipio:</strong> " +
+          (
+            ev.datos.municipio ||
+            "No registrado"
+          ) +
+
+          "<br>" +
+
+          "<strong>⚠️ Daño:</strong> " +
+          (
+            ev.datos.nivelDano ||
+            "No registrado"
+          ) +
+
+          "<br><br>" +
+
+          "<span class='badge'>" +
+          "⏳ PENDIENTE" +
+          "</span>";
+
+
+        lista.appendChild(div);
+
+      }
+    );
+
+  }catch(error){
+
+    lista.innerHTML =
+      "❌ Error al consultar las evaluaciones.";
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* ============================================================
+   SINCRONIZAR
+   ============================================================ */
+
+async function sincronizarPendientes(){
+
+  if(
+    !navigator.onLine
+  ){
+
+    alert(
+      "🔴 No hay conexión a internet.\n\n" +
+      "La sincronización se realizará cuando vuelva la red."
+    );
+
+    return;
+  }
+
+
+  const evaluaciones =
+    await leerEvaluaciones();
+
+
+  if(
+    evaluaciones.length === 0
+  ){
+
+    alert(
+      "📭 No hay evaluaciones pendientes."
+    );
+
+    return;
+  }
+
+
+  alert(
+    "🔄 La sincronización será habilitada en el siguiente paso."
+  );
+
+}
+
+
+/* ============================================================
+   FIN
+   ============================================================ */
+
+</script>
+
+</body>
+</html>
