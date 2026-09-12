@@ -3040,15 +3040,34 @@ async function sincronizarPendientes() {
   }
 
   // ----------------------------------------------------------
+  // MODO DE PRUEBA: sincronizar SOLO la primera pendiente
+  // Se activa únicamente con ?prueba=1 en la URL.
+  // En uso normal, todas las pendientes se sincronizan.
+  // ----------------------------------------------------------
+
+  const modoPruebaUna =
+    new URLSearchParams(window.location.search).get("prueba") === "1";
+
+  const pendientesAProcesar =
+    modoPruebaUna ? pendientes.slice(0, 1) : pendientes;
+
+  // ----------------------------------------------------------
   // CONFIRMACIÓN
   // ----------------------------------------------------------
 
   const confirmar =
     confirm(
-      "🔄 Se encontraron " +
-      pendientes.length +
-      " evaluación(es) pendientes.\n\n" +
-      "¿Desea sincronizarlas ahora?"
+      modoPruebaUna
+        ? "🧪 MODO DE PRUEBA\n\n" +
+          "Se enviará SOLO 1 evaluación de las " +
+          pendientes.length +
+          " pendientes.\n\n" +
+          "Las demás quedarán guardadas en este celular.\n\n" +
+          "¿Desea continuar?"
+        : "🔄 Se encontraron " +
+          pendientes.length +
+          " evaluación(es) pendientes.\n\n" +
+          "¿Desea sincronizarlas ahora?"
     );
 
   if (!confirmar) {
@@ -3081,12 +3100,12 @@ async function sincronizarPendientes() {
 
   for (
     let i = 0;
-    i < pendientes.length;
+    i < pendientesAProcesar.length;
     i++
   ) {
 
     const evaluacion =
-      pendientes[i];
+      pendientesAProcesar[i];
 
     try {
 
