@@ -7,7 +7,7 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Evaluación Post-Sismo Offline V2</title>
+  <title>Evaluación Post-Sismo Offline</title>
 
   <style>
 
@@ -592,161 +592,47 @@
         font-size:28px;
       }
     }
-    /* AJUSTE DE TAMAÑO PARA CELULARES */
-@media (max-width: 600px){
 
-  .pantalla{
-    padding:12px 10px 20px;
-  }
+  
+/* ============================================================
+   AJUSTE VISUAL COMPACTO - POST-SISMO OFFLINE
+   ============================================================ */
+.pantalla{padding:12px 10px 20px}
+.tituloPrincipal{padding:16px 12px 14px;margin-bottom:10px;border-radius:20px}
+.tituloPrincipal h1{font-size:32px;margin:0 0 6px}
+.tituloPrincipal p{font-size:19px}
+.ventana{padding:15px 13px 16px;border-radius:18px;border-top-width:6px}
+.paso{font-size:18px;margin-bottom:8px}
+.cabecera{font-size:25px;padding:10px 8px;margin-bottom:10px;border-radius:13px}
+.estado,.estadoFormulario{font-size:18px;padding:10px;margin-bottom:10px;border-radius:12px}
+.coordenadas{font-size:21px;padding:10px 8px;margin:10px 0}
+.precision{font-size:18px;margin:9px 0}
+button{min-height:54px;font-size:19px;margin-top:8px;padding:10px 9px;border-radius:12px}
+.fotoInfo,.formularioInfo{font-size:18px;margin-bottom:10px}
+.fotoContador{font-size:20px;padding:10px;margin:10px 0}
+.fotoLista{margin-top:10px}
+.fotoItem{font-size:18px;padding:9px;margin-bottom:9px}
+.fotoItem img{max-height:220px}
+.campo{margin:9px 0 12px}
+.campo label{font-size:18px;margin-bottom:5px}
+.campo input,.campo select,.campo textarea{font-size:17px;padding:9px;border-radius:10px}
+.campo textarea{min-height:95px}
+.campo select{min-height:48px}
+.grupoTitulo{font-size:19px;padding:10px;margin:16px 0 9px;border-left-width:5px}
+.opciones label{font-size:17px;padding:9px 8px}
+.opciones input{width:22px;height:22px;margin-right:7px}
+.estadoRed{font-size:16px;padding:8px;margin-bottom:9px}
+.resumen{font-size:17px;padding:10px;margin-top:10px}
+.listaPendientes{font-size:17px}
+.pendienteItem{padding:10px;margin:8px 0}
+.badge{font-size:14px;padding:4px 7px}
+.ayuda{font-size:17px;padding:10px;margin-top:9px}
 
-  .tituloPrincipal{
-    padding:18px 12px 16px;
-    border-radius:20px;
-  }
-
-  .tituloPrincipal h1{
-    font-size:30px;
-    line-height:1.15;
-    margin-bottom:8px;
-  }
-
-  .tituloPrincipal p{
-    font-size:19px;
-    line-height:1.25;
-  }
-
-  .ventana{
-    padding:18px 14px 18px;
-    border-radius:18px;
-    border-top-width:6px;
-  }
-
-  .paso{
-    font-size:19px;
-    margin-bottom:10px;
-  }
-
-  .cabecera{
-    font-size:25px;
-    line-height:1.2;
-    padding:12px 8px;
-    margin-bottom:13px;
-  }
-
-  .estado,
-  .estadoFormulario{
-    font-size:19px;
-    line-height:1.3;
-    padding:13px 10px;
-    margin-bottom:14px;
-  }
-
-  .coordenadas{
-    font-size:19px;
-    line-height:1.3;
-    padding:13px 8px;
-    margin:12px 0;
-  }
-
-  .precision{
-    font-size:18px;
-    line-height:1.3;
-    margin:12px 0;
-  }
-
-  button{
-    min-height:62px;
-    font-size:20px;
-    line-height:1.2;
-    padding:12px 10px;
-  }
-
-  .fotoInfo,
-  .formularioInfo{
-    font-size:18px;
-    line-height:1.35;
-  }
-
-  .fotoContador{
-    font-size:21px;
-    padding:12px 8px;
-  }
-
-  .fotoItem{
-    font-size:18px;
-  }
-
-  .campo{
-    margin:13px 0 16px;
-  }
-
-  .campo label{
-    font-size:18px;
-    line-height:1.25;
-    margin-bottom:6px;
-  }
-
-  .campo input,
-  .campo select,
-  .campo textarea{
-    font-size:18px;
-    padding:12px;
-  }
-
-  .campo select{
-    min-height:54px;
-  }
-
-  .campo textarea{
-    min-height:110px;
-  }
-
-  .grupoTitulo{
-    font-size:21px;
-    padding:11px 10px;
-    margin:20px 0 10px;
-  }
-
-  .opciones label{
-    font-size:17px;
-    line-height:1.3;
-    padding:11px 8px;
-  }
-
-  .opciones input{
-    width:23px;
-    height:23px;
-    margin-right:8px;
-  }
-
-  .estadoRed{
-    font-size:17px;
-    padding:9px;
-  }
-
-  .resumen{
-    font-size:18px;
-    line-height:1.35;
-    padding:12px;
-  }
-
-  .listaPendientes{
-    font-size:17px;
-  }
-
-  .pendienteItem{
-    padding:11px;
-  }
-
-  .badge{
-    font-size:16px;
-  }
-
-  .ayuda{
-    font-size:17px;
-    line-height:1.4;
-    padding:13px 11px;
-  }
+@media(max-width:700px){
+  .tituloPrincipal h1{font-size:29px}
+  .tituloPrincipal p{font-size:17px}
+  .cabecera{font-size:23px}
+  button{font-size:18px;min-height:52px}
 }
 
   </style>
@@ -1846,6 +1732,9 @@
 
 
 <script>
+const URL_PUENTE_SINCRONIZACION =
+  "https://script.google.com/macros/s/AKfycbw6HDeQCGM0QLdTPW8H3WX9rIMHdRJ1Ichcm7AcMeBgyHK7S1h1jtVkp4GmOSSodphB/exec";
+
 
 
 /* ============================================================
@@ -1997,154 +1886,155 @@ function irAFormulario(){
    ============================================================ */
 
 function obtenerGPS(){
+  const estado = document.getElementById("estadoGPS");
+  const boton = document.getElementById("btnGPS");
+  const coordenadas = document.getElementById("coordenadas");
+  const precision = document.getElementById("precision");
+  const continuar = document.getElementById("btnContinuarGPS");
 
-  const estado =
-    document.getElementById("estadoGPS");
-
-  const boton =
-    document.getElementById("btnGPS");
-
-  if(
-    !navigator.geolocation
-  ){
-
-    estado.innerHTML =
-      "❌ Este dispositivo no permite obtener GPS.";
-
-    estado.className =
-      "estado error";
-
+  if(!navigator.geolocation){
+    estado.innerHTML = "❌ Este dispositivo no permite obtener GPS.";
+    estado.className = "estado error";
     return;
   }
 
+  // Reiniciar la información anterior.
+  latitud = null;
+  longitud = null;
+  precisionGPS = null;
 
   boton.disabled = true;
+  boton.innerHTML = "⏳ BUSCANDO GPS...";
+  continuar.classList.add("oculto");
+  coordenadas.classList.add("oculto");
+  precision.classList.add("oculto");
 
-  boton.innerHTML =
-    "⏳ OBTENIENDO UBICACIÓN...";
+  estado.innerHTML = "🛰️ Buscando la mejor ubicación...<br><small>Espere unos segundos sin mover mucho el teléfono.</small>";
+  estado.className = "estado aviso";
 
-  estado.innerHTML =
-    "🛰️ Buscando ubicación GPS...";
+  let mejorPrecision = Infinity;
+  let watchId = null;
+  let terminado = false;
+  const inicioBusqueda = Date.now();
+  const DURACION_BUSQUEDA = 20000; // 20 segundos
 
-  estado.className =
-    "estado aviso";
+  function finalizarGPS(exito){
+    if(terminado) return;
+    terminado = true;
 
-
-  navigator.geolocation.getCurrentPosition(
-
-    function(posicion){
-
-      latitud =
-        posicion.coords.latitude;
-
-      longitud =
-        posicion.coords.longitude;
-
-      precisionGPS =
-        posicion.coords.accuracy;
-
-
-      document
-        .getElementById("coordenadas")
-        .innerHTML =
-          "📍 Latitud: " +
-          latitud.toFixed(6) +
-          "<br>" +
-          "📍 Longitud: " +
-          longitud.toFixed(6);
-
-
-      document
-        .getElementById("coordenadas")
-        .classList.remove("oculto");
-
-
-      document
-        .getElementById("precision")
-        .innerHTML =
-          "🎯 Precisión aproximada: " +
-          Math.round(precisionGPS) +
-          " metros";
-
-
-      document
-        .getElementById("precision")
-        .classList.remove("oculto");
-
-
-      estado.innerHTML =
-        "✅ UBICACIÓN OBTENIDA CORRECTAMENTE";
-
-      estado.className =
-        "estado exito";
-
-
-      boton.disabled = false;
-
-      boton.innerHTML =
-        "📍 ACTUALIZAR UBICACIÓN GPS";
-
-
-      document
-        .getElementById(
-          "btnContinuarGPS"
-        )
-        .classList.remove("oculto");
-
-    },
-
-    function(error){
-
-      boton.disabled = false;
-
-      boton.innerHTML =
-        "📍 INTENTAR GPS NUEVAMENTE";
-
-
-      estado.className =
-        "estado error";
-
-
-      if(
-        error.code === 1
-      ){
-
-        estado.innerHTML =
-          "❌ Debe permitir el acceso a la ubicación.";
-
-      }else if(
-        error.code === 2
-      ){
-
-        estado.innerHTML =
-          "❌ No fue posible determinar la ubicación.";
-
-      }else if(
-        error.code === 3
-      ){
-
-        estado.innerHTML =
-          "⏳ El GPS tardó demasiado. Intente nuevamente.";
-
-      }else{
-
-        estado.innerHTML =
-          "❌ No fue posible obtener el GPS.";
-
-      }
-
-    },
-
-    {
-      enableHighAccuracy:true,
-      timeout:30000,
-      maximumAge:0
+    if(watchId !== null){
+      navigator.geolocation.clearWatch(watchId);
     }
 
+    boton.disabled = false;
+
+    if(exito && latitud !== null && longitud !== null){
+      coordenadas.innerHTML =
+        "📍 Latitud: " + latitud.toFixed(6) +
+        "<br>📍 Longitud: " + longitud.toFixed(6);
+
+      precision.innerHTML =
+        "🎯 Precisión aproximada: " +
+        Math.round(precisionGPS) + " metros";
+
+      coordenadas.classList.remove("oculto");
+      precision.classList.remove("oculto");
+
+      estado.innerHTML =
+        "✅ UBICACIÓN GPS OBTENIDA<br><small>Se conservó la lectura más precisa.</small>";
+      estado.className = "estado exito";
+
+      boton.innerHTML = "📍 ACTUALIZAR UBICACIÓN GPS";
+      continuar.classList.remove("oculto");
+    }else{
+      estado.innerHTML =
+        "❌ No fue posible obtener una ubicación GPS.<br><small>Intente nuevamente al aire libre.</small>";
+      estado.className = "estado error";
+      boton.innerHTML = "📍 INTENTAR GPS NUEVAMENTE";
+    }
+  }
+
+  function recibirPosicion(posicion){
+    const p = posicion.coords;
+    const precisionActual = Number(p.accuracy);
+
+    // Guardar siempre la lectura con menor margen de error.
+    if(
+      Number.isFinite(precisionActual) &&
+      precisionActual < mejorPrecision
+    ){
+      mejorPrecision = precisionActual;
+      latitud = p.latitude;
+      longitud = p.longitude;
+      precisionGPS = precisionActual;
+
+      coordenadas.innerHTML =
+        "📍 Latitud: " + latitud.toFixed(6) +
+        "<br>📍 Longitud: " + longitud.toFixed(6);
+
+      precision.innerHTML =
+        "🎯 Mejor precisión: " +
+        Math.round(precisionGPS) + " metros";
+
+      coordenadas.classList.remove("oculto");
+      precision.classList.remove("oculto");
+
+      const segundos = Math.max(
+        0,
+        Math.ceil((DURACION_BUSQUEDA - (Date.now() - inicioBusqueda))/1000)
+      );
+
+      estado.innerHTML =
+        "🛰️ GPS encontrado. Mejorando precisión...<br>" +
+        "<small>Tiempo restante: " + segundos + " s</small>";
+      estado.className = "estado aviso";
+    }
+
+    // Si ya tenemos una precisión muy buena, podemos terminar antes.
+    if(precisionGPS !== null && precisionGPS <= 10){
+      finalizarGPS(true);
+    }
+  }
+
+  function errorGPS(error){
+    // No terminamos inmediatamente: el teléfono puede tardar
+    // en conseguir una lectura válida.
+    if(Date.now() - inicioBusqueda >= DURACION_BUSQUEDA){
+      finalizarGPS(latitud !== null && longitud !== null);
+    }else{
+      estado.innerHTML =
+        "🛰️ Esperando señal GPS...<br><small>No apague el GPS.</small>";
+      estado.className = "estado aviso";
+    }
+  }
+
+  // Lecturas repetidas para intentar mejorar la precisión.
+  watchId = navigator.geolocation.watchPosition(
+    recibirPosicion,
+    errorGPS,
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:0
+    }
   );
 
-}
+  // Además solicitamos una lectura inmediata.
+  navigator.geolocation.getCurrentPosition(
+    recibirPosicion,
+    errorGPS,
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:0
+    }
+  );
 
+  // Límite máximo de búsqueda: 20 segundos.
+  setTimeout(function(){
+    finalizarGPS(latitud !== null && longitud !== null);
+  }, DURACION_BUSQUEDA);
+}
 
 /* ============================================================
    FOTOGRAFÍAS
@@ -2941,47 +2831,384 @@ async function cargarPendientes(){
 }
 
 
-/* ============================================================
-   SINCRONIZAR
-   ============================================================ */
+// ============================================================
+// PUENTE GITHUB PAGES -> APPS SCRIPT
+// Usa POST mediante formulario oculto + consulta JSONP de estado.
+// Esto evita depender de google.script.run y reduce problemas CORS.
+// ============================================================
 
-async function sincronizarPendientes(){
+function enviarEvaluacionPorPuente(evaluacion) {
 
-  if(
-    !navigator.onLine
-  ){
+  return new Promise(function(resolve, reject) {
 
-    alert(
-      "🔴 No hay conexión a internet.\n\n" +
-      "La sincronización se realizará cuando vuelva la red."
-    );
+    const id = String(evaluacion.id || "");
 
-    return;
-  }
+    if (!id) {
+      reject(new Error("La evaluación no tiene ID."));
+      return;
+    }
 
+    const nombreIframe =
+      "iframeSync_" +
+      id.replace(/[^a-zA-Z0-9_-]/g, "_");
 
-  const evaluaciones =
-    await leerEvaluaciones();
+    let iframe = document.getElementById(nombreIframe);
 
+    if (!iframe) {
+      iframe = document.createElement("iframe");
+      iframe.id = nombreIframe;
+      iframe.name = nombreIframe;
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    }
 
-  if(
-    evaluaciones.length === 0
-  ){
+    const formulario = document.createElement("form");
+    formulario.method = "POST";
+    formulario.action = URL_PUENTE_SINCRONIZACION;
+    formulario.target = nombreIframe;
+    formulario.style.display = "none";
 
-    alert(
-      "📭 No hay evaluaciones pendientes."
-    );
+    const campo = document.createElement("input");
+    campo.type = "hidden";
+    campo.name = "payload";
+    campo.value = JSON.stringify(evaluacion);
 
-    return;
-  }
+    const campoId = document.createElement("input");
+    campoId.type = "hidden";
+    campoId.name = "id";
+    campoId.value = id;
 
+    formulario.appendChild(campo);
+    formulario.appendChild(campoId);
+    document.body.appendChild(formulario);
 
-  alert(
-    "🔄 La sincronización será habilitada en el siguiente paso."
-  );
+    formulario.submit();
 
+    setTimeout(function() {
+      if (formulario.parentNode) {
+        formulario.parentNode.removeChild(formulario);
+      }
+    }, 3000);
+
+    consultarEstadoSincronizacion_(id, 0, resolve, reject);
+  });
 }
 
+
+function consultarEstadoSincronizacion_(id, intento, resolve, reject) {
+
+  if (intento >= 30) {
+    reject(new Error(
+      "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
+    ));
+    return;
+  }
+
+  const nombre =
+    "callbackSync_" +
+    Date.now() + "_" + intento;
+
+  const script = document.createElement("script");
+  let terminado = false;
+
+  window[nombre] = function(respuesta) {
+
+    terminado = true;
+
+    try {
+      delete window[nombre];
+    } catch (e) {}
+
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+
+    if (respuesta && respuesta.ok === true) {
+      resolve(respuesta);
+      return;
+    }
+
+    if (respuesta && respuesta.pendiente === true) {
+      setTimeout(function() {
+        consultarEstadoSincronizacion_(
+          id,
+          intento + 1,
+          resolve,
+          reject
+        );
+      }, 1000);
+      return;
+    }
+
+    reject(new Error(
+      (respuesta && (respuesta.error || respuesta.mensaje)) ||
+      "El servidor no confirmó la sincronización."
+    ));
+  };
+
+  script.onerror = function() {
+
+    if (terminado) return;
+
+    try {
+      delete window[nombre];
+    } catch (e) {}
+
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+
+    setTimeout(function() {
+      consultarEstadoSincronizacion_(
+        id,
+        intento + 1,
+        resolve,
+        reject
+      );
+    }, 1000);
+  };
+
+  script.src =
+    URL_PUENTE_SINCRONIZACION +
+    "?accion=estadoSincronizacion" +
+    "&id=" + encodeURIComponent(id) +
+    "&callback=" + encodeURIComponent(nombre);
+
+  document.body.appendChild(script);
+}
+
+
+async function sincronizarPendientes() {
+
+  // ----------------------------------------------------------
+  // VERIFICAR INTERNET
+  // ----------------------------------------------------------
+
+  if (!navigator.onLine) {
+
+    alert(
+      "📵 No hay conexión a Internet.\n\n" +
+      "Las evaluaciones permanecen guardadas en este celular."
+    );
+
+    return;
+  }
+
+  // ----------------------------------------------------------
+  // LEER EVALUACIONES
+  // ----------------------------------------------------------
+
+  let evaluaciones;
+
+  try {
+
+    evaluaciones =
+      await leerEvaluaciones();
+
+  } catch (error) {
+
+    alert(
+      "❌ No se pudieron leer las evaluaciones guardadas.\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+  // ----------------------------------------------------------
+  // FILTRAR PENDIENTES
+  // ----------------------------------------------------------
+
+  const pendientes =
+    evaluaciones.filter(function(e) {
+
+      return (
+        e &&
+        e.estado === "PENDIENTE" &&
+        e.sincronizado !== true
+      );
+
+    });
+
+  if (pendientes.length === 0) {
+
+    alert(
+      "✅ No hay evaluaciones pendientes de sincronizar."
+    );
+
+    return;
+  }
+
+  // ----------------------------------------------------------
+  // CONFIRMACIÓN
+  // ----------------------------------------------------------
+
+  const confirmar =
+    confirm(
+      "🔄 Se encontraron " +
+      pendientes.length +
+      " evaluación(es) pendientes.\n\n" +
+      "¿Desea sincronizarlas ahora?"
+    );
+
+  if (!confirmar) {
+    return;
+  }
+
+  // ----------------------------------------------------------
+  // MOSTRAR ESTADO
+  // ----------------------------------------------------------
+
+  const boton =
+    document.getElementById(
+      "btnSincronizar"
+    );
+
+  if (boton) {
+
+    boton.disabled = true;
+
+    boton.textContent =
+      "🔄 SINCRONIZANDO...";
+  }
+
+  let exitosas = 0;
+  let fallidas = 0;
+
+  // ----------------------------------------------------------
+  // SINCRONIZAR UNA POR UNA
+  // ----------------------------------------------------------
+
+  for (
+    let i = 0;
+    i < pendientes.length;
+    i++
+  ) {
+
+    const evaluacion =
+      pendientes[i];
+
+    try {
+
+      console.log(
+        "Sincronizando:",
+        evaluacion.id
+      );
+
+      // ------------------------------------------------------
+      // LLAMAR A APPS SCRIPT
+      // ------------------------------------------------------
+
+      const resultado =
+        await enviarEvaluacionPorPuente(
+          evaluacion
+        );
+
+      // ------------------------------------------------------
+      // VERIFICAR RESPUESTA
+      // ------------------------------------------------------
+
+      if (
+        !resultado ||
+        resultado.ok !== true
+      ) {
+
+        throw new Error(
+          "El servidor no confirmó la sincronización."
+        );
+      }
+
+      // ------------------------------------------------------
+      // MARCAR COMO SINCRONIZADA
+      // ------------------------------------------------------
+
+      evaluacion.estado =
+        "SINCRONIZADA";
+
+      evaluacion.sincronizado =
+        true;
+
+      evaluacion.fechaSincronizacion =
+        new Date().toISOString();
+
+      await guardarEnDB(
+        evaluacion
+      );
+
+      exitosas++;
+
+      console.log(
+        "✅ Sincronizada:",
+        evaluacion.id
+      );
+
+    } catch (error) {
+
+      fallidas++;
+
+      console.error(
+        "❌ Error sincronizando " +
+        evaluacion.id,
+        error
+      );
+
+      // IMPORTANTE:
+      // NO se elimina la evaluación.
+      // Queda pendiente para otro intento.
+    }
+  }
+
+  // ----------------------------------------------------------
+  // RESTAURAR BOTÓN
+  // ----------------------------------------------------------
+
+  if (boton) {
+
+    boton.disabled = false;
+
+    boton.textContent =
+      "🔄 SINCRONIZAR PENDIENTES";
+  }
+
+  // ----------------------------------------------------------
+  // ACTUALIZAR PANTALLA
+  // ----------------------------------------------------------
+
+  try {
+
+    await cargarPendientes();
+
+  } catch (error) {
+
+    console.error(
+      "Error actualizando pendientes:",
+      error
+    );
+  }
+
+  // ----------------------------------------------------------
+  // RESULTADO FINAL
+  // ----------------------------------------------------------
+
+  let mensaje =
+    "🔄 SINCRONIZACIÓN TERMINADA\n\n" +
+    "✅ Sincronizadas: " +
+    exitosas;
+
+  if (fallidas > 0) {
+
+    mensaje +=
+      "\n❌ Pendientes por sincronizar: " +
+      fallidas +
+      "\n\n" +
+      "Las que fallaron permanecen guardadas " +
+      "en este celular.";
+  }
+
+  alert(
+    mensaje
+  );
+}
 
 /* ============================================================
    FIN
