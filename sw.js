@@ -3,7 +3,8 @@ const CACHE_NAME = "post-sismo-v2";
 const ARCHIVOS = [
   "./",
   "./index.html",
-  "./manifest.json"
+  "./manifest.json",
+  "./GPSOFFLINE.html"  
 ];
 
 self.addEventListener("install", event => {
