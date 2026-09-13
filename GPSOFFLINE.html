@@ -2727,18 +2727,11 @@ async function guardarEvaluacion(event){
           );
         }
 
-        // Confirmada por Apps Script: actualizar el registro local
-        evaluacion.estado =
-          "SINCRONIZADA";
-
-        evaluacion.sincronizado =
-          true;
-
-        evaluacion.fechaSincronizacion =
-          new Date().toISOString();
-
-        await guardarEnDB(
-          evaluacion
+        // Confirmada por Apps Script: eliminar el registro del teléfono.
+        // No se vuelve a guardar como SINCRONIZADA: si el servidor confirmó
+        // que llegó a la hoja, el registro local ya cumplió su función de respaldo.
+        await eliminarDeDB(
+          evaluacion.id
         );
 
         estado.innerHTML =
