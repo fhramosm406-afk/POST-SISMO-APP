@@ -2837,6 +2837,45 @@ async function cargarPendientes(){
 // Esto evita depender de google.script.run y reduce problemas CORS.
 // ============================================================
 
+// ============================================================
+// CONFIRMACIÓN DE SINCRONIZACIÓN MEDIANTE postMessage
+// ============================================================
+let sincronizacionEnCurso = {};
+
+window.addEventListener("message", function(event) {
+  const data = event && event.data ? event.data : null;
+
+  if (!data || data.tipo !== "POST_SISMO_SYNC" || !data.respuesta) {
+    return;
+  }
+
+  const respuesta = data.respuesta;
+  const id = respuesta.id ? String(respuesta.id) : "";
+  const pendiente = id ? sincronizacionEnCurso[id] : null;
+
+  if (!pendiente) {
+    return;
+  }
+
+  clearTimeout(pendiente.temporizador);
+  delete sincronizacionEnCurso[id];
+
+  if (pendiente.iframe && pendiente.iframe.parentNode) {
+    pendiente.iframe.parentNode.removeChild(pendiente.iframe);
+  }
+
+  if (respuesta.ok === true) {
+    pendiente.resolve(respuesta);
+  } else {
+    pendiente.reject(new Error(
+      respuesta.error ||
+      respuesta.mensaje ||
+      "El servidor informó un error al sincronizar."
+    ));
+  }
+});
+
+
 function enviarEvaluacionPorPuente(evaluacion) {
 
   return new Promise(function(resolve, reject) {
@@ -2852,15 +2891,36 @@ function enviarEvaluacionPorPuente(evaluacion) {
       "iframeSync_" +
       id.replace(/[^a-zA-Z0-9_-]/g, "_");
 
-    let iframe = document.getElementById(nombreIframe);
+    const iframe = document.createElement("iframe");
+    iframe.id = nombreIframe;
+    iframe.name = nombreIframe;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
 
-    if (!iframe) {
-      iframe = document.createElement("iframe");
-      iframe.id = nombreIframe;
-      iframe.name = nombreIframe;
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-    }
+    const temporizador = setTimeout(function() {
+
+      if (!sincronizacionEnCurso[id]) {
+        return;
+      }
+
+      delete sincronizacionEnCurso[id];
+
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+
+      reject(new Error(
+        "El servidor recibió la evaluación, pero no llegó la confirmación al celular. La evaluación permanece guardada y se puede volver a intentar."
+      ));
+
+    }, 25000);
+
+    sincronizacionEnCurso[id] = {
+      resolve: resolve,
+      reject: reject,
+      iframe: iframe,
+      temporizador: temporizador
+    };
 
     const formulario = document.createElement("form");
     formulario.method = "POST";
@@ -2878,103 +2938,40 @@ function enviarEvaluacionPorPuente(evaluacion) {
     campoId.name = "id";
     campoId.value = id;
 
+    const campoModo = document.createElement("input");
+    campoModo.type = "hidden";
+    campoModo.name = "modoIframe";
+    campoModo.value = "1";
+
     formulario.appendChild(campo);
     formulario.appendChild(campoId);
+    formulario.appendChild(campoModo);
     document.body.appendChild(formulario);
 
-    formulario.submit();
+    try {
+      formulario.submit();
+    } catch (error) {
+      clearTimeout(temporizador);
+      delete sincronizacionEnCurso[id];
+
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+
+      if (formulario.parentNode) {
+        formulario.parentNode.removeChild(formulario);
+      }
+
+      reject(error);
+      return;
+    }
 
     setTimeout(function() {
       if (formulario.parentNode) {
         formulario.parentNode.removeChild(formulario);
       }
     }, 3000);
-
-    consultarEstadoSincronizacion_(id, 0, resolve, reject);
   });
-}
-
-
-function consultarEstadoSincronizacion_(id, intento, resolve, reject) {
-
-  if (intento >= 30) {
-    reject(new Error(
-      "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
-    ));
-    return;
-  }
-
-  const nombre =
-    "callbackSync_" +
-    Date.now() + "_" + intento;
-
-  const script = document.createElement("script");
-  let terminado = false;
-
-  window[nombre] = function(respuesta) {
-
-    terminado = true;
-
-    try {
-      delete window[nombre];
-    } catch (e) {}
-
-    if (script.parentNode) {
-      script.parentNode.removeChild(script);
-    }
-
-    if (respuesta && respuesta.ok === true) {
-      resolve(respuesta);
-      return;
-    }
-
-    if (respuesta && respuesta.pendiente === true) {
-      setTimeout(function() {
-        consultarEstadoSincronizacion_(
-          id,
-          intento + 1,
-          resolve,
-          reject
-        );
-      }, 1000);
-      return;
-    }
-
-    reject(new Error(
-      (respuesta && (respuesta.error || respuesta.mensaje)) ||
-      "El servidor no confirmó la sincronización."
-    ));
-  };
-
-  script.onerror = function() {
-
-    if (terminado) return;
-
-    try {
-      delete window[nombre];
-    } catch (e) {}
-
-    if (script.parentNode) {
-      script.parentNode.removeChild(script);
-    }
-
-    setTimeout(function() {
-      consultarEstadoSincronizacion_(
-        id,
-        intento + 1,
-        resolve,
-        reject
-      );
-    }, 1000);
-  };
-
-  script.src =
-    URL_PUENTE_SINCRONIZACION +
-    "?accion=estadoSincronizacion" +
-    "&id=" + encodeURIComponent(id) +
-    "&callback=" + encodeURIComponent(nombre);
-
-  document.body.appendChild(script);
 }
 
 
