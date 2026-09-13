@@ -2372,6 +2372,48 @@ function guardarEnDB(evaluacion){
 
 
 /* ============================================================
+   ELIMINAR EVALUACIÓN DE INDEXED DB
+   Solo se ejecuta después de recibir confirmación OK del servidor.
+   ============================================================ */
+
+function eliminarDeDB(id){
+
+  return new Promise(
+    function(resolve,reject){
+
+      const transaccion =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      const store =
+        transaccion.objectStore(
+          STORE_NAME
+        );
+
+      const solicitud =
+        store.delete(id);
+
+      solicitud.onsuccess =
+        function(){
+          resolve();
+        };
+
+      solicitud.onerror =
+        function(){
+          reject(
+            solicitud.error
+          );
+        };
+
+    }
+  );
+
+}
+
+
+/* ============================================================
    LEER TODAS LAS EVALUACIONES
    ============================================================ */
 
@@ -3289,8 +3331,12 @@ async function sincronizarPendientes() {
       evaluacion.fechaSincronizacion =
         new Date().toISOString();
 
-      await guardarEnDB(
-        evaluacion
+      // ------------------------------------------------------
+      // ELIMINAR DEL TELÉFONO DESPUÉS DE CONFIRMACIÓN
+      // ------------------------------------------------------
+
+      await eliminarDeDB(
+        evaluacion.id
       );
 
       exitosas++;
