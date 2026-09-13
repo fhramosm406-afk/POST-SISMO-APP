@@ -2641,22 +2641,100 @@ async function guardarEvaluacion(event){
     };
 
 
+    // ----------------------------------------------------------
+    // GUARDAR SIEMPRE EN EL TELÉFONO COMO RESPALDO
+    // ----------------------------------------------------------
     await guardarEnDB(
       evaluacion
     );
 
 
-    estado.innerHTML =
-      "✅ EVALUACIÓN GUARDADA CORRECTAMENTE";
+    // ----------------------------------------------------------
+    // SI HAY INTERNET, ENVIAR INMEDIATAMENTE A APPS SCRIPT
+    // Si falla el envío, el registro queda PENDIENTE en el
+    // teléfono para poder sincronizarlo posteriormente.
+    // ----------------------------------------------------------
+    if (navigator.onLine) {
 
-    estado.className =
-      "estadoFormulario exito";
+      try {
 
+        estado.innerHTML =
+          "📤 ENVIANDO EVALUACIÓN...";
 
-    alert(
-      "✅ La evaluación quedó guardada en este teléfono.\n\n" +
-      "Podrá sincronizarse cuando vuelva la conexión."
-    );
+        estado.className =
+          "estadoFormulario";
+
+        const resultado =
+          await enviarEvaluacionPorPuente(
+            evaluacion
+          );
+
+        if (
+          !resultado ||
+          resultado.ok !== true
+        ) {
+          throw new Error(
+            "El servidor no confirmó la sincronización."
+          );
+        }
+
+        // Confirmada por Apps Script: actualizar el registro local
+        evaluacion.estado =
+          "SINCRONIZADA";
+
+        evaluacion.sincronizado =
+          true;
+
+        evaluacion.fechaSincronizacion =
+          new Date().toISOString();
+
+        await guardarEnDB(
+          evaluacion
+        );
+
+        estado.innerHTML =
+          "✅ EVALUACIÓN GUARDADA Y ENVIADA";
+
+        estado.className =
+          "estadoFormulario exito";
+
+        alert(
+          "✅ La evaluación fue guardada correctamente y enviada a la hoja de cálculo."
+        );
+
+      } catch (errorSincronizacion) {
+
+        console.error(
+          "Error de sincronización automática:",
+          errorSincronizacion
+        );
+
+        // Se conserva como pendiente para una futura sincronización
+        estado.innerHTML =
+          "⚠️ GUARDADA EN EL TELÉFONO - PENDIENTE DE ENVÍO";
+
+        estado.className =
+          "estadoFormulario";
+
+        alert(
+          "⚠️ La evaluación quedó guardada en este teléfono, pero no pudo enviarse a la hoja de cálculo.\n\n" +
+          "Podrá enviarse después desde SINCRONIZAR PENDIENTES."
+        );
+      }
+
+    } else {
+
+      estado.innerHTML =
+        "📴 GUARDADA SIN CONEXIÓN";
+
+      estado.className =
+        "estadoFormulario";
+
+      alert(
+        "📴 No hay conexión a internet.\n\n" +
+        "La evaluación quedó guardada en este teléfono y se podrá sincronizar cuando vuelva la conexión."
+      );
+    }
 
 
     document
