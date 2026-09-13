@@ -2947,6 +2947,53 @@ function enviarEvaluacionPorPuente(evaluacion) {
       document.body.appendChild(iframe);
     }
 
+    let terminado = false;
+
+    function limpiar() {
+      window.removeEventListener("message", recibirMensaje);
+      if (formulario.parentNode) {
+        formulario.parentNode.removeChild(formulario);
+      }
+      setTimeout(function() {
+        if (iframe && iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      }, 1000);
+    }
+
+    function finalizarOK(respuesta) {
+      if (terminado) return;
+      terminado = true;
+      limpiar();
+      resolve(respuesta);
+    }
+
+    function finalizarError(error) {
+      if (terminado) return;
+      terminado = true;
+      limpiar();
+      reject(error);
+    }
+
+    function recibirMensaje(evento) {
+      const datos = evento && evento.data;
+
+      if (!datos || datos.tipo !== "POST_SISMO_SYNC") return;
+      if (!datos.respuesta || String(datos.respuesta.id || "") !== id) return;
+
+      if (datos.respuesta.ok === true) {
+        finalizarOK(datos.respuesta);
+      } else {
+        finalizarError(new Error(
+          datos.respuesta.error ||
+          datos.respuesta.mensaje ||
+          "El servidor no confirmó la sincronización."
+        ));
+      }
+    }
+
+    window.addEventListener("message", recibirMensaje);
+
     const formulario = document.createElement("form");
     formulario.method = "POST";
     formulario.action = URL_PUENTE_SINCRONIZACION;
@@ -2963,19 +3010,26 @@ function enviarEvaluacionPorPuente(evaluacion) {
     campoId.name = "id";
     campoId.value = id;
 
+    const campoIframe = document.createElement("input");
+    campoIframe.type = "hidden";
+    campoIframe.name = "modoIframe";
+    campoIframe.value = "1";
+
     formulario.appendChild(campo);
     formulario.appendChild(campoId);
+    formulario.appendChild(campoIframe);
     document.body.appendChild(formulario);
 
     formulario.submit();
 
+    // Tiempo máximo para recibir la confirmación del Apps Script.
     setTimeout(function() {
-      if (formulario.parentNode) {
-        formulario.parentNode.removeChild(formulario);
+      if (!terminado) {
+        finalizarError(new Error(
+          "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
+        ));
       }
-    }, 3000);
-
-    consultarEstadoSincronizacion_(id, 0, resolve, reject);
+    }, 25000);
   });
 }
 
