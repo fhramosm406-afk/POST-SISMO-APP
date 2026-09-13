@@ -2996,9 +2996,15 @@ function enviarEvaluacionPorPuente(evaluacion) {
     campoIframe.name = "modoIframe";
     campoIframe.value = "1";
 
+    const campoOrigen = document.createElement("input");
+    campoOrigen.type = "hidden";
+    campoOrigen.name = "origen";
+    campoOrigen.value = evaluacion.origen || (navigator.onLine ? "MODO CON INTERNET" : "MODO SIN CONEXIÓN");
+
     formulario.appendChild(campo);
     formulario.appendChild(campoId);
     formulario.appendChild(campoIframe);
+    formulario.appendChild(campoOrigen);
     document.body.appendChild(formulario);
 
     // El POST realiza la escritura. La respuesta visible del iframe
