@@ -2968,72 +2968,18 @@ function enviarEvaluacionPorPuente(evaluacion) {
       return;
     }
 
-    const nombreIframe =
-      "iframeSync_" +
-      id.replace(/[^a-zA-Z0-9_-]/g, "_");
-
-    let iframe = document.getElementById(nombreIframe);
-
-    if (!iframe) {
-      iframe = document.createElement("iframe");
-      iframe.id = nombreIframe;
-      iframe.name = nombreIframe;
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-    }
-
-    let terminado = false;
-
-    function limpiar() {
-      window.removeEventListener("message", recibirMensaje);
-      if (formulario.parentNode) {
-        formulario.parentNode.removeChild(formulario);
-      }
-      setTimeout(function() {
-        if (iframe && iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe);
-        }
-      }, 1000);
-    }
-
-    function finalizarOK(respuesta) {
-      if (terminado) return;
-      terminado = true;
-      limpiar();
-      resolve(respuesta);
-    }
-
-    function finalizarError(error) {
-      if (terminado) return;
-      terminado = true;
-      limpiar();
-      reject(error);
-    }
-
-    function recibirMensaje(evento) {
-      const datos = evento && evento.data;
-
-      if (!datos || datos.tipo !== "POST_SISMO_SYNC") return;
-      if (!datos.respuesta || String(datos.respuesta.id || "") !== id) return;
-
-      if (datos.respuesta.ok === true) {
-        finalizarOK(datos.respuesta);
-      } else {
-        finalizarError(new Error(
-          datos.respuesta.error ||
-          datos.respuesta.mensaje ||
-          "El servidor no confirmó la sincronización."
-        ));
-      }
-    }
-
-    window.addEventListener("message", recibirMensaje);
-
+    // Enviamos el registro por POST y luego consultamos el estado
+    // mediante JSONP. No dependemos de postMessage para confirmar.
     const formulario = document.createElement("form");
     formulario.method = "POST";
     formulario.action = URL_PUENTE_SINCRONIZACION;
-    formulario.target = nombreIframe;
+    formulario.target = "iframeEnvio_" + id.replace(/[^a-zA-Z0-9_-]/g, "_");
     formulario.style.display = "none";
+
+    const iframe = document.createElement("iframe");
+    iframe.name = formulario.target;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
 
     const campo = document.createElement("input");
     campo.type = "hidden";
@@ -3055,19 +3001,21 @@ function enviarEvaluacionPorPuente(evaluacion) {
     formulario.appendChild(campoIframe);
     document.body.appendChild(formulario);
 
+    // El POST realiza la escritura. La respuesta visible del iframe
+    // no se usa como confirmación porque puede llegar tarde o no ser
+    // interpretada por el navegador.
     formulario.submit();
 
-    // Tiempo máximo para recibir la confirmación del Apps Script.
     setTimeout(function() {
-      if (!terminado) {
-        finalizarError(new Error(
-          "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
-        ));
-      }
-    }, 25000);
+      if (formulario.parentNode) formulario.parentNode.removeChild(formulario);
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+
+      // Ahora consultamos el estado que Apps Script dejó registrado.
+      consultarEstadoSincronizacion_(id, 0, resolve, reject);
+    }, 1000);
+
   });
 }
-
 
 function consultarEstadoSincronizacion_(id, intento, resolve, reject) {
 
