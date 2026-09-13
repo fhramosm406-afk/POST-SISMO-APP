@@ -2509,6 +2509,13 @@ async function guardarEvaluacion(event){
       sincronizado:
         false,
 
+      // Indica al servidor si esta evaluación fue creada
+      // con conexión o sin conexión.
+      origen:
+        navigator.onLine
+          ? "MODO CON INTERNET"
+          : "MODO SIN CONEXIÓN",
+
 
       latitud:
         latitud,
