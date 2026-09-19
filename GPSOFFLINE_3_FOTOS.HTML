@@ -2848,7 +2848,6 @@ async function mostrarPendientes(){
 /* ============================================================
    CARGAR PENDIENTES
    ============================================================ */
-
 async function cargarPendientes(){
 
   const lista =
@@ -2856,32 +2855,41 @@ async function cargarPendientes(){
       "listaPendientes"
     );
 
-
   try{
 
     const evaluaciones =
       await leerEvaluaciones();
 
+    const pendientes =
+      evaluaciones.filter(
+        function(ev){
+
+          return (
+            ev &&
+            ev.estado === "PENDIENTE" &&
+            ev.sincronizado !== true
+          );
+
+        }
+      );
 
     if(
-      evaluaciones.length === 0
+      pendientes.length === 0
     ){
 
       lista.innerHTML =
         "<div class='resumen'>" +
-        "📭 No hay evaluaciones pendientes." +
+        "✅ No hay evaluaciones pendientes de sincronizar." +
         "</div>";
 
       return;
 
     }
 
-
     lista.innerHTML =
       "";
 
-
-    evaluaciones.forEach(
+    pendientes.forEach(
       function(ev){
 
         const div =
@@ -2889,10 +2897,8 @@ async function cargarPendientes(){
             "div"
           );
 
-
         div.className =
           "pendienteItem";
-
 
         const fecha =
           new Date(
@@ -2900,7 +2906,6 @@ async function cargarPendientes(){
           ).toLocaleString(
             "es-CO"
           );
-
 
         div.innerHTML =
 
@@ -2921,16 +2926,20 @@ async function cargarPendientes(){
 
           "<strong>🏙️ Municipio:</strong> " +
           (
-            ev.datos.municipio ||
-            "No registrado"
+            ev.datos &&
+            ev.datos.municipio
+              ? ev.datos.municipio
+              : "No registrado"
           ) +
 
           "<br>" +
 
           "<strong>⚠️ Daño:</strong> " +
           (
-            ev.datos.nivelDano ||
-            "No registrado"
+            ev.datos &&
+            ev.datos.nivelDano
+              ? ev.datos.nivelDano
+              : "No registrado"
           ) +
 
           "<br><br>" +
@@ -2939,24 +2948,28 @@ async function cargarPendientes(){
           "⏳ PENDIENTE" +
           "</span>";
 
-
-        lista.appendChild(div);
+        lista.appendChild(
+          div
+        );
 
       }
     );
 
-  }catch(error){
+  }
+
+  catch(error){
 
     lista.innerHTML =
       "❌ Error al consultar las evaluaciones.";
 
-    console.error(error);
+    console.error(
+      "Error cargando pendientes:",
+      error
+    );
 
   }
 
 }
-
-
 // ============================================================
 // PUENTE GITHUB PAGES -> APPS SCRIPT
 // Usa POST mediante formulario oculto + consulta JSONP de estado.
