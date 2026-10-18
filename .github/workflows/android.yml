@@ -1,0 +1,87 @@
+
+name: Generar APK POST-SISMO
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - prueba-sw-correcto
+    paths:
+      - '.github/workflows/android.yml'
+      - 'GPSOFFLINE_3_FOTOS.HTML'
+      - 'GPSOFFLINE.html'
+      - 'index.html'
+      - 'manifest.json'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compilar aplicación Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Preparar archivos web
+        run: |
+          mkdir -p www
+          if [ -f GPSOFFLINE_3_FOTOS.HTML ]; then
+            cp GPSOFFLINE_3_FOTOS.HTML www/index.html
+          elif [ -f GPSOFFLINE.html ]; then
+            cp GPSOFFLINE.html www/index.html
+          elif [ -f index.html ]; then
+            cp index.html www/index.html
+          else
+            echo "No se encontró el archivo HTML principal"
+            exit 1
+          fi
+          if [ -f manifest.json ]; then
+            cp manifest.json www/manifest.json
+          fi
+
+      - name: Configurar Capacitor
+        run: |
+          npm init -y
+          npm install @capacitor/core@^7 @capacitor/android@^7
+          npm install --save-dev @capacitor/cli@^7
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "co.postsismo.app",
+            "appName": "POST-SISMO",
+            "webDir": "www"
+          }
+          EOF
+
+      - name: Crear proyecto Android
+        run: npx cap add android
+
+      - name: Sincronizar aplicación
+        run: npx cap sync android
+
+      - name: Generar APK de prueba
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Publicar APK para descargar
+        uses: actions/upload-artifact@v4
+        with:
+          name: POST-SISMO-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
