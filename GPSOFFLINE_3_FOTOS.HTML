@@ -1778,7 +1778,7 @@ document.addEventListener(
       "offline",
       actualizarEstadoRed
     );
-
+setInterval(actualizarEstadoRed, 20000);
   }
 );
 
@@ -1787,30 +1787,109 @@ document.addEventListener(
    ESTADO DE INTERNET
    ============================================================ */
 
-function actualizarEstadoRed(){
 
-  const elemento =
-    document.getElementById("estadoRed");
+/* ============================================================
+   ESTADO REAL DE INTERNET - POST-SISMO
+   Comprueba acceso al servicio de sincronización.
+   No modifica el GPS ni el almacenamiento local.
+   ============================================================ */
 
-  if(navigator.onLine){
+let comprobacionRedEnCurso = false;
 
-    elemento.innerHTML =
-      "🟢 CON CONEXIÓN A INTERNET";
+async function actualizarEstadoRed() {
+  const elemento = document.getElementById("estadoRed");
 
-    elemento.className =
-      "estadoRed online";
+  if (!elemento || comprobacionRedEnCurso) return;
 
-  }else{
-
-    elemento.innerHTML =
+  if (!navigator.onLine) {
+    elemento.textContent =
       "🔴 SIN CONEXIÓN — MODO OFFLINE";
-
-    elemento.className =
-      "estadoRed offline";
-
+    elemento.className = "estadoRed offline";
+    return;
   }
 
+  comprobacionRedEnCurso = true;
+  elemento.textContent = "📡 VERIFICANDO INTERNET...";
+  elemento.className = "estadoRed";
+
+  let nombreCallback = null;
+  let script = null;
+  let temporizador = null;
+
+  try {
+    const conectado = await new Promise((resolve) => {
+      let terminado = false;
+
+      nombreCallback =
+        "comprobarRed_" + Date.now() + "_" +
+        Math.floor(Math.random() * 100000);
+
+      script = document.createElement("script");
+
+      function finalizar(resultado) {
+        if (terminado) return;
+        terminado = true;
+
+        clearTimeout(temporizador);
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+
+        try {
+          delete window[nombreCallback];
+        } catch (e) {
+          window[nombreCallback] = undefined;
+        }
+
+        resolve(resultado);
+      }
+
+      // Una respuesta del servidor confirma acceso al servicio.
+      window[nombreCallback] = function() {
+        finalizar(true);
+      };
+
+      script.onerror = function() {
+        finalizar(false);
+      };
+
+      // Evita dejar el indicador esperando indefinidamente.
+      temporizador = setTimeout(function() {
+        finalizar(false);
+      }, 8000);
+
+      script.src =
+        URL_PUENTE_SINCRONIZACION +
+        "?accion=estadoSincronizacion" +
+        "&id=" + encodeURIComponent(nombreCallback) +
+        "&callback=" + encodeURIComponent(nombreCallback) +
+        "&_=" + Date.now();
+
+      document.body.appendChild(script);
+    });
+
+    // No mostrar conexión si el teléfono perdió la red
+    // mientras se realizaba la comprobación.
+    if (!navigator.onLine || !conectado) {
+      elemento.textContent =
+        "🔴 SIN CONEXIÓN — MODO OFFLINE";
+      elemento.className = "estadoRed offline";
+    } else {
+      elemento.textContent =
+        "🟢 INTERNET DISPONIBLE";
+      elemento.className = "estadoRed online";
+    }
+
+  } catch (error) {
+    elemento.textContent =
+      "🔴 SIN ACCESO AL SERVIDOR — MODO OFFLINE";
+    elemento.className = "estadoRed offline";
+  } finally {
+    comprobacionRedEnCurso = false;
+  }
 }
+
 
 
 /* ============================================================
