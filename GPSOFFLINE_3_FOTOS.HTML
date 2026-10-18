@@ -2497,17 +2497,38 @@ function guardarEnDB(evaluacion){
 
 function eliminarDeDB(id) {
   return new Promise(function(resolve, reject) {
-    const transaccion = db.transaction(STORE_NAME, "readwrite");
-    const store = transaccion.objectStore(STORE_NAME);
-    const solicitud = store.delete(id);
+    if (!db) {
+      reject(new Error("La base de datos local no está abierta."));
+      return;
+    }
 
-    solicitud.onsuccess = function() {
-      resolve();
-    };
+    let transaccion;
 
-    solicitud.onerror = function() {
-      reject(solicitud.error);
-    };
+    try {
+      transaccion = db.transaction(STORE_NAME, "readwrite");
+      const store = transaccion.objectStore(STORE_NAME);
+      const solicitud = store.delete(id);
+
+      solicitud.onerror = function() {
+        reject(solicitud.error || new Error("No se pudo eliminar la evaluación local."));
+      };
+
+      // Confirmar la eliminación solo cuando IndexedDB complete
+      // la transacción, no solamente cuando la solicitud termine.
+      transaccion.oncomplete = function() {
+        resolve();
+      };
+
+      transaccion.onerror = function() {
+        reject(transaccion.error || new Error("Falló la transacción de eliminación local."));
+      };
+
+      transaccion.onabort = function() {
+        reject(transaccion.error || new Error("Se canceló la eliminación local."));
+      };
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 /* ============================================================
