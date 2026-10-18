@@ -2824,30 +2824,19 @@ async function guardarEvaluacion(event){
           );
         }
 
-        // Confirmada por Apps Script: actualizar el registro local
-        evaluacion.estado =
-          "SINCRONIZADA";
+// Confirmada por Apps Script: eliminar el respaldo local
+await eliminarDeDB(evaluacion.id);
 
-        evaluacion.sincronizado =
-          true;
+estado.innerHTML =
+  "✅ EVALUACIÓN GUARDADA Y ENVIADA";
 
-        evaluacion.fechaSincronizacion =
-          new Date().toISOString();
+estado.className =
+  "estadoFormulario exito";
 
-        await guardarEnDB(
-          evaluacion
-        );
-
-        estado.innerHTML =
-          "✅ EVALUACIÓN GUARDADA Y ENVIADA";
-
-        estado.className =
-          "estadoFormulario exito";
-
-        alert(
-          "✅ La evaluación fue guardada correctamente y enviada a la hoja de cálculo."
-        );
-
+alert(
+  "✅ La evaluación fue guardada correctamente y enviada a la hoja de cálculo."
+);
+        
       } catch (errorSincronizacion) {
 
         console.error(
