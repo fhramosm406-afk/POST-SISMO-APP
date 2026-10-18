@@ -2492,6 +2492,25 @@ function guardarEnDB(evaluacion){
 
 
 /* ============================================================
+   ELIMINAR UNA EVALUACION DE INDEXED DB
+   ============================================================ */
+
+function eliminarDeDB(id) {
+  return new Promise(function(resolve, reject) {
+    const transaccion = db.transaction(STORE_NAME, "readwrite");
+    const store = transaccion.objectStore(STORE_NAME);
+    const solicitud = store.delete(id);
+
+    solicitud.onsuccess = function() {
+      resolve();
+    };
+
+    solicitud.onerror = function() {
+      reject(solicitud.error);
+    };
+  });
+}
+/* ============================================================
    LEER TODAS LAS EVALUACIONES
    ============================================================ */
 
@@ -3410,21 +3429,8 @@ async function sincronizarPendientes() {
       }
 
       // ------------------------------------------------------
-      // MARCAR COMO SINCRONIZADA
-      // ------------------------------------------------------
-
-      evaluacion.estado =
-        "SINCRONIZADA";
-
-      evaluacion.sincronizado =
-        true;
-
-      evaluacion.fechaSincronizacion =
-        new Date().toISOString();
-
-      await guardarEnDB(
-        evaluacion
-      );
+      // ELIMINAR DEL CELULAR SOLO TRAS CONFIRMACION DEL SERVIDOR
+      await eliminarDeDB(evaluacion.id);
 
       exitosas++;
 
