@@ -67,7 +67,9 @@ jobs:
           EOF
 
       - name: Crear proyecto Android
-        run: npx cap add android
+        run: |
+          rm -rf android
+          npx cap add android
 
       - name: Sincronizar aplicación
         run: npx cap sync android
