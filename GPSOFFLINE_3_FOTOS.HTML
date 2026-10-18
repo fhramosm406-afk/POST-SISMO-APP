@@ -3085,22 +3085,15 @@ async function cargarPendientes(){
 // ============================================================
 
 function enviarEvaluacionPorPuente(evaluacion) {
-
   return new Promise(function(resolve, reject) {
-
-    const id = String(evaluacion.id || "");
-
+    const id = String(evaluacion && evaluacion.id || "");
     if (!id) {
       reject(new Error("La evaluación no tiene ID."));
       return;
     }
 
-    const nombreIframe =
-      "iframeSync_" +
-      id.replace(/[^a-zA-Z0-9_-]/g, "_");
-
+    const nombreIframe = "iframeSync_" + id.replace(/[^a-zA-Z0-9_-]/g, "_");
     let iframe = document.getElementById(nombreIframe);
-
     if (!iframe) {
       iframe = document.createElement("iframe");
       iframe.id = nombreIframe;
@@ -3109,18 +3102,16 @@ function enviarEvaluacionPorPuente(evaluacion) {
       document.body.appendChild(iframe);
     }
 
+    let formulario = null;
     let terminado = false;
+    let temporizadorInicio = null;
+    let temporizadorLimite = null;
 
     function limpiar() {
-      window.removeEventListener("message", recibirMensaje);
-      if (formulario.parentNode) {
-        formulario.parentNode.removeChild(formulario);
-      }
-      setTimeout(function() {
-        if (iframe && iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe);
-        }
-      }, 1000);
+      if (temporizadorInicio) clearTimeout(temporizadorInicio);
+      if (temporizadorLimite) clearTimeout(temporizadorLimite);
+      if (formulario && formulario.parentNode) formulario.parentNode.removeChild(formulario);
+      if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
     }
 
     function finalizarOK(respuesta) {
@@ -3134,29 +3125,12 @@ function enviarEvaluacionPorPuente(evaluacion) {
       if (terminado) return;
       terminado = true;
       limpiar();
-      reject(error);
+      reject(error instanceof Error ? error : new Error(String(error || "Falló la sincronización.")));
     }
 
-    function recibirMensaje(evento) {
-      const datos = evento && evento.data;
-
-      if (!datos || datos.tipo !== "POST_SISMO_SYNC") return;
-      if (!datos.respuesta || String(datos.respuesta.id || "") !== id) return;
-
-      if (datos.respuesta.ok === true) {
-        finalizarOK(datos.respuesta);
-      } else {
-        finalizarError(new Error(
-          datos.respuesta.error ||
-          datos.respuesta.mensaje ||
-          "El servidor no confirmó la sincronización."
-        ));
-      }
-    }
-
-    window.addEventListener("message", recibirMensaje);
-
-    const formulario = document.createElement("form");
+    // El POST envía el registro. La confirmación se verifica consultando
+    // al servidor por el ID, de modo que también funcione si el ID ya existe.
+    formulario = document.createElement("form");
     formulario.method = "POST";
     formulario.action = URL_PUENTE_SINCRONIZACION;
     formulario.target = nombreIframe;
@@ -3182,19 +3156,27 @@ function enviarEvaluacionPorPuente(evaluacion) {
     formulario.appendChild(campoIframe);
     document.body.appendChild(formulario);
 
-    formulario.submit();
+    try {
+      formulario.submit();
+    } catch (error) {
+      finalizarError(error);
+      return;
+    }
 
-    // Tiempo máximo para recibir la confirmación del Apps Script.
-    setTimeout(function() {
-      if (!terminado) {
-        finalizarError(new Error(
-          "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
-        ));
-      }
-    }, 25000);
+    // Dar tiempo al POST para terminar antes de consultar el estado.
+    temporizadorInicio = setTimeout(function() {
+      if (terminado) return;
+      consultarEstadoSincronizacion_(id, 0, finalizarOK, finalizarError);
+    }, 1200);
+
+    // No eliminar el respaldo si el servidor nunca confirma el registro.
+    temporizadorLimite = setTimeout(function() {
+      finalizarError(new Error(
+        "El servidor no confirmó la sincronización dentro del tiempo esperado. La evaluación permanece guardada en el celular."
+      ));
+    }, 35000);
   });
 }
-
 
 function consultarEstadoSincronizacion_(id, intento, resolve, reject) {
 
